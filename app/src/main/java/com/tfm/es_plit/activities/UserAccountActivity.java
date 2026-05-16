@@ -10,17 +10,26 @@ import com.tfm.es_plit.R;
 
 public class UserAccountActivity extends AppCompatActivity {
 
-    Button btnPaymentRoom;
+    Button btnHostPaymentRoom;
+    Button btnJoinPaymentRoom;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
 
-        btnPaymentRoom = findViewById(R.id.btnPaymentRoom);
+        btnHostPaymentRoom = findViewById(R.id.btnHost);
 
-        btnPaymentRoom.setOnClickListener(v -> {
-            Intent intent = new Intent(UserAccountActivity.this, PaymentRoomActivity.class);
+        btnHostPaymentRoom.setOnClickListener(v -> {
+            Intent intent = new Intent(UserAccountActivity.this, PaymentHostRoomActivity.class);
+            startActivity(intent);
+        });
+
+        btnJoinPaymentRoom = findViewById(R.id.btnJoin);
+
+        btnJoinPaymentRoom.setOnClickListener(v -> {
+            Intent intent = new Intent(UserAccountActivity.this, PaymentJoinRoomActivity.class);
             startActivity(intent);
         });
     }

@@ -1,20 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center"
-    android:orientation="vertical">
+    android:padding="32dp"
+    android:background="@color/ink_black">
 
-    <TextView
+    <!-- Bloque del Logo -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pantalla Principal"
-        android:textSize="24sp"/>
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="64dp">
 
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ir al Login"/>
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/logo"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="20dp"
+            android:contentDescription="Logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ES-plit"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.2"
+            android:textColor="@color/dusty_denim" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dividir es facil pero juntarnos es mejor"
+            android:textSize="15sp"
+            android:letterSpacing="0.15"
+            android:textColor="@color/eggshell"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- Botón primario -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Iniciar sesión"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/dusty_denim"
+        app:strokeColor="@color/space_blue"
+        app:cornerRadius="14dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Botón secundario (outline) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRegister"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Crear cuenta"
+        android:textSize="15sp"
+        android:textColor="@color/eggshell"
+        app:strokeColor="@color/blue_slate"
+        app:cornerRadius="14dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+
 </LinearLayout>

@@ -1,20 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:gravity="center"
-    android:orientation="vertical">
+    android:padding="32dp"
+    android:background="@color/ink_black">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cuenta del Usuario"
-        android:textSize="24sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@color/space_blue"
+        android:orientation="vertical"
+        android:layout_marginBottom="100dp">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/eggshell"
+            >
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btnPaymentRoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ir a Sala de Pago"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="XXXX-XXXX-XXXX-XXXX"
+                    android:letterSpacing="0.5"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:textColor="@color/eggshell"
+                    android:layout_margin="5dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre usuario:"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:textColor="@color/eggshell"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="INSERTAR NOMBRE DE USUARIO"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:textColor="@color/eggshell"
+                    android:layout_margin="5dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Saldo disponible:"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:textColor="@color/eggshell"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="INSERTAR SALDO DISPONIBLE"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:textColor="@color/eggshell"
+                    android:layout_margin="5dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    
+    </LinearLayout>
+
+    <!-- Botón primario -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnHost"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Crear pago compartido"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/dusty_denim"
+        app:strokeColor="@color/space_blue"
+        app:cornerRadius="14dp"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Botón secundario (outline) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnJoin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Unirse a pago compartido"
+        android:textSize="15sp"
+        android:textColor="@color/eggshell"
+        app:strokeColor="@color/blue_slate"
+        app:cornerRadius="14dp" />
+
+
 </LinearLayout>

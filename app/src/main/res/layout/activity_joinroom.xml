@@ -9,6 +9,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sala de Pago"
+        android:text="Sala de invitado"
         android:textSize="24sp"/>
 </LinearLayout>

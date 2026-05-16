@@ -6,7 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.tfm.es_plit.activities.LoginActivity;
+import com.tfm.es_plit.activities.UserAccountActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,10 +17,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnStart = findViewById(R.id.btnStart);
+        btnStart = findViewById(R.id.btnLogin);
 
         btnStart.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            Intent intent = new Intent(MainActivity.this, UserAccountActivity.class);
             startActivity(intent);
         });
     }
