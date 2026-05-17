@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:gravity="center"
     android:padding="32dp"
     android:background="@color/ink_black">
 
+    <!-- Espacio superior -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Tarjeta -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:background="@color/space_blue"
-        android:orientation="vertical"
-        android:layout_marginBottom="100dp">
-        
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="30dp"
-            android:background="@color/eggshell"
-            >
-        </LinearLayout>
+            android:background="@color/eggshell" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="XXXX-XXXX-XXXX-XXXX-XXXX"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                android:textColor="@color/eggshell"
+                android:layout_margin="5dp"/>
+
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="XXXX-XXXX-XXXX-XXXX"
-                    android:letterSpacing="0.5"
-                    android:textSize="12sp"
-                    android:textStyle="italic"
-                    android:textColor="@color/eggshell"
-                    android:layout_margin="5dp"/>
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
-
+                android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nombre usuario:"
-                    android:textSize="12sp"
+                    android:textSize="15sp"
                     android:textStyle="italic"
                     android:textColor="@color/eggshell"
                     android:layout_margin="5dp"/>
@@ -65,18 +60,16 @@
                     android:textStyle="italic"
                     android:textColor="@color/eggshell"
                     android:layout_margin="5dp"/>
-
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
-
+                android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Saldo disponible:"
-                    android:textSize="12sp"
+                    android:textSize="15sp"
                     android:textStyle="italic"
                     android:textColor="@color/eggshell"
                     android:layout_margin="5dp"/>
@@ -88,38 +81,50 @@
                     android:textStyle="italic"
                     android:textColor="@color/eggshell"
                     android:layout_margin="5dp"/>
-
             </LinearLayout>
 
         </LinearLayout>
-    
+
+
+
     </LinearLayout>
 
-    <!-- Botón primario -->
+    <!-- Espacio entre tarjeta y botones -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+    <!-- Botones -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnHost"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Crear pago compartido"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/dusty_denim"
-        app:strokeColor="@color/space_blue"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Crear ES-plit"
+        android:textSize="18sp"
+        android:textColor="@color/greeh"
+        app:strokeColor="@color/greeh"
         app:cornerRadius="14dp"
         android:layout_marginBottom="12dp"/>
 
-    <!-- Botón secundario (outline) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnJoin"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Unirse a pago compartido"
-        android:textSize="15sp"
-        android:textColor="@color/eggshell"
-        app:strokeColor="@color/blue_slate"
-        app:cornerRadius="14dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Unirse a ES-plit"
+        android:textSize="18sp"
+        android:textColor="#08f0ff"
+        app:strokeColor="#08f0ff"
+        app:cornerRadius="14dp"/>
 
+    <!-- Espacio inferior -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

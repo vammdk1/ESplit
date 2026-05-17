@@ -22,7 +22,7 @@ public class UserAccountActivity extends AppCompatActivity {
         btnHostPaymentRoom = findViewById(R.id.btnHost);
 
         btnHostPaymentRoom.setOnClickListener(v -> {
-            Intent intent = new Intent(UserAccountActivity.this, PaymentHostRoomActivity.class);
+            Intent intent = new Intent(UserAccountActivity.this, PreHostRoomActivity.class);
             startActivity(intent);
         });
 

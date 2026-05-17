@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="12dp"
+        android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,6 +25,7 @@
         android:layout_marginEnd="8dp"/>
 
     <TextView
+        android:id="@+id/textTotalAmmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total a pagar: €0.00"
@@ -63,7 +65,7 @@
                 android:layout_marginEnd="8dp"/>
 
             <TextView
-                android:id="@+id/texUnmanagedAmmount"
+                android:id="@+id/textUnmanagedAmmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -71,7 +73,7 @@
                 android:text="€0.00"
                 android:textAlignment="center"
                 android:textColor="@color/eggshell"
-                android:layout_marginEnd="8dp"/>
+                />
 
         </LinearLayout>
     </LinearLayout>
@@ -83,7 +85,7 @@
         android:layout_marginTop="12dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnJoin"
+            android:id="@+id/btnHostCancel"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="56dp"
@@ -95,7 +97,7 @@
             android:layout_marginEnd="8dp"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnHost"
+            android:id="@+id/btnHostPay"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="56dp"
