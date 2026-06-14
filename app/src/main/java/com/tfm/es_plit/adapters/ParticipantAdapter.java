@@ -3,6 +3,7 @@ package com.tfm.es_plit.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,10 +15,24 @@ import java.util.List;
 
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.ViewHolder> {
 
-    private List<Participant> participants;
+    /**
+     * Intefaz para procesar lógico dentro del adaptador
+     * */
+    public interface OnParticipantActionListener {
+        void onRemove(Participant participant);
+        void onConfirm(Participant participant);
+    }
 
-    public ParticipantAdapter(List<Participant> participants) {
+    //Lista de participantes a dibujar
+    private final List<Participant> participants;
+
+    //Listener para realziar acciones en el código
+    private final OnParticipantActionListener listener;
+
+    public ParticipantAdapter(List<Participant> participants, OnParticipantActionListener listener) {
         this.participants = participants;
+        this.listener = listener;
+
     }
 
     @Override
@@ -32,6 +47,19 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         Participant p = participants.get(position);
         holder.tvName.setText(p.getName());
         holder.tvAmount.setText(String.format("€%.2f", p.getAmount()));
+
+        holder.btRemove.setOnClickListener(v -> {
+            int pos = holder.getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_ID){
+                participants.remove(pos);
+                notifyItemRemoved(pos);
+                listener.onRemove(p); // avisa a la Activity con el participante eliminado
+            }
+        });
+
+        holder.btConfirm.setOnClickListener(v -> {
+            listener.onConfirm(p);
+        });
     }
 
     @Override
@@ -39,13 +67,17 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         return participants.size();
     }
 
+    //declaración de elementos visuales
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvAmount;
+        Button btConfirm, btRemove;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvParticipantName);
             tvAmount = itemView.findViewById(R.id.tvParticipantAmount);
+            btConfirm = itemView.findViewById(R.id.btnConfirm);
+            btRemove = itemView.findViewById(R.id.btnRemove);
         }
     }
 }

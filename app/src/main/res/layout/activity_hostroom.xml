@@ -21,17 +21,33 @@
         android:textSize="18sp"
         android:layout_weight="1"
         android:textColor="@color/eggshell"
-        android:layout_marginBottom="12dp"
         android:layout_marginEnd="8dp"/>
 
-    <TextView
-        android:id="@+id/textTotalAmmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total a pagar: €0.00"
-        android:textSize="18sp"
-        android:textColor="@color/eggshell"
-        android:layout_marginBottom="12dp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total a pagar:"
+                android:textSize="18sp"
+                android:textColor="@color/eggshell"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/totalSplitAmmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00 €"
+                android:textSize="18sp"
+                android:textColor="@color/eggshell"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -57,12 +73,12 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:textSize="20dp"
                 android:text="Fragmento restante:"
                 android:textAlignment="center"
                 android:textColor="@color/eggshell"
-                android:layout_marginEnd="8dp"/>
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/textUnmanagedAmmount"
