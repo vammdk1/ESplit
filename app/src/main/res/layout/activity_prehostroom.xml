@@ -75,8 +75,8 @@
                 android:layout_height="56dp"
                 android:layout_weight="1"
                 android:text="Crear ES-plit"
-                android:textColor="@color/greeh"
-                app:strokeColor="@color/greeh"
+                android:textColor="@color/green"
+                app:strokeColor="@color/green"
                 app:cornerRadius="14dp"
                 />
 

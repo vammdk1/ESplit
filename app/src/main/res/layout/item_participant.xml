@@ -43,9 +43,9 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:text="✓"
-        android:textColor="@color/greeh"
+        android:textColor="@color/green"
         android:padding="0dp"
-        app:strokeColor="@color/greeh"
+        app:strokeColor="@color/green"
         app:cornerRadius="8dp"/>
 
 </LinearLayout>
