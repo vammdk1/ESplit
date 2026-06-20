@@ -1,5 +1,6 @@
 package com.tfm.es_plit.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,15 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfm.es_plit.R;
+import com.tfm.es_plit.dataSimulation.User;
+import com.tfm.es_plit.dataSimulation.fakeUsers;
 import com.tfm.es_plit.models.Participant;
 
 import java.util.List;
 
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.ViewHolder> {
+
+    private fakeUsers fakeRepository;
 
     /**
      * Intefaz para procesar lógico dentro del adaptador
@@ -29,9 +34,10 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     //Listener para realziar acciones en el código
     private final OnParticipantActionListener listener;
 
-    public ParticipantAdapter(List<Participant> participants, OnParticipantActionListener listener) {
+    public ParticipantAdapter(List<Participant> participants, OnParticipantActionListener listener, fakeUsers fakeRepository) {
         this.participants = participants;
         this.listener = listener;
+        this.fakeRepository=fakeRepository;
 
     }
 
@@ -58,6 +64,13 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         });
 
         holder.btConfirm.setOnClickListener(v -> {
+            //confirmar montos del usuario
+            User user = fakeRepository.getUserById(p.getid());
+            if (user != null && user.getFunds() >= p.getAmount()){
+                holder.tvName.setTextColor(Color.parseColor("#05d61a"));
+            } else {
+                holder.tvName.setTextColor(Color.parseColor("#f8352a"));
+            }
             listener.onConfirm(p);
         });
     }

@@ -20,6 +20,7 @@ import java.util.List;
 public class PaymentHostRoomActivity extends AppCompatActivity {
     //Boton para cancelar proceso
     private Button btCancel;
+    private Button btStartpayment;
     private List<Participant> plist = new ArrayList<>();
     private double totalAmmount;
     private double ammounPerPerson;
@@ -31,14 +32,22 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     private void calcularMontos(){
         int numParticipants = plist.size();
         ammounPerPerson = totalAmmount / (numParticipants+1);
-
         // Asignar la parte a cada participante
         for (Participant p : plist) {
             p.setAmount(ammounPerPerson);
         }
-
         hostAmmount.setText(String.format("%.2f €", ammounPerPerson));
     };
+
+    //Verifica si todos los participantes pueden pagar
+    private boolean paymentStatusCheck(){
+        for (Participant p: plist){
+            if (!p.getConfirmationStatus()){
+                return false;
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_hostroom);
 
         btCancel = findViewById(R.id.btnHostCancel);
+        btStartpayment = findViewById(R.id.btnHostPay);
 
         //recibir dinero
         totalAmmount = getIntent().getDoubleExtra("TOTAL_AMOUNT",0.0);
@@ -62,8 +72,10 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
         //OBJETO NFC falso
         int[] Lids = {1,2};
-        plist.add(new Participant(repository.getUserName(Lids[0])));
-        plist.add(new Participant(repository.getUserName(Lids[1])));
+        User tuser = repository.getUserById(Lids[0]);
+        plist.add(new Participant(tuser.getId(),tuser.getName()));
+        tuser = repository.getUserById(Lids[1]);
+        plist.add(new Participant(tuser.getId(),tuser.getName()));
 
         // Dividir entre participantes
         calcularMontos();
@@ -79,14 +91,17 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
             @Override
             public void onConfirm(Participant participant) {
-                //TODO enviar mensaje de confirmación de monto
+
             }
-        });
+        }, repository);
+
         recyclerView.setAdapter(adapter);
 
         //botones
         btCancel.setOnClickListener( view -> {
             finish();
         });
+
+        //btStartpayment
     }
 }

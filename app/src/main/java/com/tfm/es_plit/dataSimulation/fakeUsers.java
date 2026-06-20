@@ -2,7 +2,6 @@ package com.tfm.es_plit.dataSimulation;
 
 import android.content.Context;
 import com.google.gson.Gson;
-import com.tfm.es_plit.models.Participant;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class fakeUsers {
     private final Context context;
@@ -45,5 +45,37 @@ public class fakeUsers {
             }
         }
         return null;
+    }
+
+    public User getUserById(int id) {
+        List <User> users = getUsers();
+        for (User user: users){
+            if (user.getId() == id){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public User getUserByEmail(String email){
+        List <User> users = getUsers();
+        for (User user: users){
+            if (Objects.equals(user.getEmail(), email)){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean loggin (String email, String pass) {
+        List<User> users = getUsers();
+        for (User user : users) {
+            if (Objects.equals(user.getEmail(), email)) {
+                if(Objects.equals(user.getPassword(), pass)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

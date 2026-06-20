@@ -63,8 +63,10 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
 
         //OBJETO NFC falso
         int[] Lids = {1,2};
-        plist.add(new Participant(repository.getUserName(Lids[0])));
-        plist.add(new Participant(repository.getUserName(Lids[1])));
+        User tuser = repository.getUserById(Lids[0]);
+        plist.add(new Participant(tuser.getId(),tuser.getName()));
+        tuser = repository.getUserById(Lids[1]);
+        plist.add(new Participant(tuser.getId(),tuser.getName()));
 
         // Dividir entre participantes
         calcularMontos();
@@ -82,7 +84,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
             public void onConfirm(Participant participant) {
                 //TODO enviar mensaje de confirmación de monto
             }
-        });
+        },repository);
         recyclerView.setAdapter(adapter);
 
         //botones

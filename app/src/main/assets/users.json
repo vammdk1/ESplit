@@ -1,4 +1,5 @@
 [
-  { "id": 1, "name": "Ana López", "email": "ana@mail.com" , "funds": 1000.0},
-  { "id": 2, "name": "Carlos Pérez", "email": "carlos@mail.com" , "funds": 50.0}
+  { "id": 1, "name": "Ana López", "email": "ana@mail.com" , "funds": 1000.0, "password":  "123456789"},
+  { "id": 2, "name": "Carlos Pérez", "email": "carlos@mail.com" , "funds": 30.0, "password":  "987654321"},
+  { "id": 99, "name": "admin admin", "email": "admin@mail.com" , "funds": 50.0, "password":  "admin1234"}
 ]

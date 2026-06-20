@@ -53,6 +53,7 @@
                     android:textColor="@color/eggshell"
                     android:layout_margin="5dp"/>
                 <TextView
+                    android:id="@+id/userUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="INSERTAR NOMBRE DE USUARIO"
@@ -74,6 +75,7 @@
                     android:textColor="@color/eggshell"
                     android:layout_margin="5dp"/>
                 <TextView
+                    android:id="@+id/userFunds"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="INSERTAR SALDO DISPONIBLE"
