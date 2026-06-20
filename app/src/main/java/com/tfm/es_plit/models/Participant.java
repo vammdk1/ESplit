@@ -1,6 +1,8 @@
 package com.tfm.es_plit.models;
 
-public class Participant {
+import java.io.Serializable;
+
+public class Participant implements Serializable {
     private final String name;
     private final int id;
     private double amount;

@@ -22,6 +22,9 @@ public class PreHostRoomActivity extends AppCompatActivity {
         btnStart = findViewById(R.id.btnNextActivity);
         btnCancel = findViewById(R.id.btnHostCancel);
 
+        //recibir host
+        int hostId = getIntent().getIntExtra("ACTUAL_USER",0);
+
         btnStart.setOnClickListener(v -> {
 
             EditText textAmount = findViewById(R.id.textAmountToPay);
@@ -35,11 +38,11 @@ public class PreHostRoomActivity extends AppCompatActivity {
             double amount = Double.parseDouble(input);
             if (amount > 0) {
                 Intent intent = new Intent(PreHostRoomActivity.this, PaymentHostRoomActivity.class);
+                intent.putExtra("ACTUAL_USER", hostId);
                 intent.putExtra("TOTAL_AMOUNT", amount);
                 startActivity(intent);
             }
         });
-
 
         btnCancel.setOnClickListener(v -> {
             finish();

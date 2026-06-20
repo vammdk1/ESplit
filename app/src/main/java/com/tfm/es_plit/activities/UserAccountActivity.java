@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfm.es_plit.R;
-import com.tfm.es_plit.dataSimulation.User;
+import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.dataSimulation.fakeUsers;
 
 public class UserAccountActivity extends AppCompatActivity {
@@ -37,6 +37,7 @@ public class UserAccountActivity extends AppCompatActivity {
 
         btnHostPaymentRoom.setOnClickListener(v -> {
             Intent intent = new Intent(UserAccountActivity.this, PreHostRoomActivity.class);
+            intent.putExtra("ACTUAL_USER", user.getId());
             startActivity(intent);
         });
 
@@ -44,6 +45,7 @@ public class UserAccountActivity extends AppCompatActivity {
 
         btnJoinPaymentRoom.setOnClickListener(v -> {
             Intent intent = new Intent(UserAccountActivity.this, PrePaymentJoinRoomActivity.class);
+            intent.putExtra("ACTUAL_USER", user.getId());
             startActivity(intent);
         });
     }

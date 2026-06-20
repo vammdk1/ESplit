@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.adapters.ParticipantAdapter;
-import com.tfm.es_plit.dataSimulation.User;
+import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.dataSimulation.fakeUsers;
 import com.tfm.es_plit.models.Participant;
 
@@ -73,6 +73,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //TODO crear nuevo reciclerview sin botones
         adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
             @Override
             public void onRemove(Participant participant) {

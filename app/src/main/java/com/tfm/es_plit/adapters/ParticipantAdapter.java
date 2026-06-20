@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfm.es_plit.R;
-import com.tfm.es_plit.dataSimulation.User;
+import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.dataSimulation.fakeUsers;
 import com.tfm.es_plit.models.Participant;
 
@@ -68,6 +68,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             User user = fakeRepository.getUserById(p.getid());
             if (user != null && user.getFunds() >= p.getAmount()){
                 holder.tvName.setTextColor(Color.parseColor("#05d61a"));
+                p.setConfirmationStatus(true);
             } else {
                 holder.tvName.setTextColor(Color.parseColor("#f8352a"));
             }

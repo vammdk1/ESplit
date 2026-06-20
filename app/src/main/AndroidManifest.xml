@@ -12,9 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ESplit">
 
-        <activity android:name=".activities.UserAccountActivity"/>
+        <activity android:name=".activities.UserAccountActivity"
+            android:launchMode="singleTop"/>
+
         <activity android:name=".activities.PreHostRoomActivity"/>
         <activity android:name=".activities.PaymentHostRoomActivity"/>
+        <activity android:name=".activities.PaymentPostHostRoomActivity"/>
+
         <activity android:name=".activities.PrePaymentJoinRoomActivity"/>
         <activity android:name=".activities.PaymentJoinRoomActivity"/>
 

@@ -2,6 +2,7 @@ package com.tfm.es_plit.dataSimulation;
 
 import android.content.Context;
 import com.google.gson.Gson;
+import com.tfm.es_plit.models.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
