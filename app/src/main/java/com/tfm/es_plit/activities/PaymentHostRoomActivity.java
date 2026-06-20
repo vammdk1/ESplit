@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.adapters.ParticipantAdapter;
+import com.tfm.es_plit.dataSimulation.User;
+import com.tfm.es_plit.dataSimulation.fakeUsers;
 import com.tfm.es_plit.models.Participant;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.List;
 public class PaymentHostRoomActivity extends AppCompatActivity {
     //Boton para cancelar proceso
     private Button btCancel;
-    private final List<Participant> plist = new ArrayList<>();
+    private List<Participant> plist = new ArrayList<>();
     private double totalAmmount;
     private double ammounPerPerson;
     private TextView hostAmmount ;
@@ -52,9 +54,16 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
         // Datos simulados
         splitAmmount.setText(String.format("%.2f €", totalAmmount));
-        plist.add(new Participant("María", 0.0));
-        plist.add(new Participant("Carlos", 0.0));
-        plist.add(new Participant("Ana", 0.0));
+        fakeUsers repository = new fakeUsers(this);
+
+        //Hacer bucle de lectura donde se reciben los IDs de los participantes
+        //Objeto que almacena los ids de los invitados NFC
+        //Semáforo secundairo que busca IDs
+
+        //OBJETO NFC falso
+        int[] Lids = {1,2};
+        plist.add(new Participant(repository.getUserName(Lids[0])));
+        plist.add(new Participant(repository.getUserName(Lids[1])));
 
         // Dividir entre participantes
         calcularMontos();

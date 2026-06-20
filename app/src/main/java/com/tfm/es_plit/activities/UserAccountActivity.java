@@ -29,7 +29,7 @@ public class UserAccountActivity extends AppCompatActivity {
         btnJoinPaymentRoom = findViewById(R.id.btnJoin);
 
         btnJoinPaymentRoom.setOnClickListener(v -> {
-            Intent intent = new Intent(UserAccountActivity.this, PaymentJoinRoomActivity.class);
+            Intent intent = new Intent(UserAccountActivity.this, PrePaymentJoinRoomActivity.class);
             startActivity(intent);
         });
     }

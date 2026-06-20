@@ -4,9 +4,8 @@ public class Participant {
     private final String name;
     private double amount;
 
-    public Participant(String name, double amount) {
+    public Participant(String name) {
         this.name = name;
-        this.amount = amount;
     }
 
     public String getName() { return name; }
