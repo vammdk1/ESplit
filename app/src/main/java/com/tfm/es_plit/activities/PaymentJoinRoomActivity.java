@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfm.es_plit.R;
+import com.tfm.es_plit.adapters.JoinAdapter;
 import com.tfm.es_plit.adapters.ParticipantAdapter;
 import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.dataSimulation.fakeUsers;
@@ -26,7 +27,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
     private double ammounPerPerson;
     private TextView hostAmmount ;
     private TextView splitAmmount ;
-    private ParticipantAdapter adapter;
+    private JoinAdapter adapter;
 
     //logica para dividir gastos equitatvamente
     private void calcularMontos(){
@@ -71,21 +72,10 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         // Dividir entre participantes
         calcularMontos();
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
+        RecyclerView recyclerView = findViewById(R.id.recyclerParticipantsJoin);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //TODO crear nuevo reciclerview sin botones
-        adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
-            @Override
-            public void onRemove(Participant participant) {
-                calcularMontos();
-                adapter.notifyDataSetChanged(); //actuliza los montos
-            }
-
-            @Override
-            public void onConfirm(Participant participant) {
-                //TODO enviar mensaje de confirmación de monto
-            }
-        },repository);
+        adapter = new JoinAdapter(plist,repository);
         recyclerView.setAdapter(adapter);
 
         //botones
