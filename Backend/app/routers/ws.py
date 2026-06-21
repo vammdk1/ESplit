@@ -1,5 +1,5 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
-from sqlmodel import Session
+from sqlmodel import select
 from app.connection_manager import manager
 from app.database import get_session
 from app.models import Participant

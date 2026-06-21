@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import SQLModel, Session
+from sqlmodel import SQLModel, Session, select
 from app.database import get_session
 from app.models import Payment, Participant, User
 from app.connection_manager import manager
@@ -25,6 +25,29 @@ class PaymentResponse(SQLModel):
 class PayResponse(SQLModel):
     success: bool
     payment_status: bool
+
+class ParticipantUpdate(SQLModel):
+    user_id: int
+    amount: float
+
+@router.put("/{payment_id}/participants/{user_id}")
+def update_participant_amount(payment_id: int, user_id: int, data: ParticipantUpdate, session: Session = Depends(get_session)):
+    participant = session.exec(
+        select(Participant).where(
+            Participant.payment_id == payment_id,
+            Participant.user_id == user_id
+        )
+    ).first()
+
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+
+    participant.amount = data.amount
+    participant.confirmation_status = False  # resetea, debe re-confirmar
+    session.add(participant)
+    session.commit()
+
+    return {"success": True}
 
 
 @router.post("/", response_model=PaymentResponse)
@@ -83,3 +106,4 @@ def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_se
     session.refresh(payment)
 
     return PayResponse(success=True, payment_status=payment.payment_status)
+
