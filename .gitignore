@@ -1,47 +1,47 @@
 # ============================
 # Android / Java / Gradle
 # ============================
-android/*.iml
-android/.gradle/
-android/local.properties
-android/.idea/
-android/.DS_Store
-android/build/
-android/captures/
-android/.externalNativeBuild/
-android/.cxx/
-android/*.apk
-android/*.ap_
-android/*.dex
-android/*.class
+Android/*.iml
+Android/.gradle/
+Android/local.properties
+Android/.idea/
+Android/.DS_Store
+Android/build/
+Android/captures/
+Android/.externalNativeBuild/
+Android/.cxx/
+Android/*.apk
+Android/*.ap_
+Android/*.dex
+Android/*.class
 
 # Generado por cada módulo
-android/**/build/
-android/**/.cxx/
+Android/**/build/
+Android/**/.cxx/
 
 # Local config (no se versiona, cada dev tiene la suya)
-android/local.properties
+Android/local.properties
 
 # Logs
-android/*.log
+Android/*.log
 
 # Keystore (nunca subir esto)
-android/*.jks
-android/*.keystore
+Android/*.jks
+Android/*.keystore
 
 # ============================
 # Python / FastAPI
 # ============================
-backend/__pycache__/
-backend/**/__pycache__/
-backend/*.pyc
-backend/venv/
-backend/.venv/
-backend/env/
-backend/.env
-backend/*.db
-backend/*.sqlite3
-backend/.pytest_cache/
+Backend/__pycache__/
+Backend/**/__pycache__/
+Backend/*.pyc
+Backend/venv/
+Backend/.venv/
+Backend/env/
+Backend/.env
+Backend/*.db
+Backend/*.sqlite3
+Backend/.pytest_cache/
 
 # ============================
 # General / Sistema operativo
