@@ -61,7 +61,28 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0a6ea2ef-d079-42b1-8da0-676a5ccd950f" name="Changes" comment="" />
+    <list default="true" id="0a6ea2ef-d079-42b1-8da0-676a5ccd950f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/models/ParticipantCreate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentCreate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentHostRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentJoinRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentJoinRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentPostHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentPostHostRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/UserAccountActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/UserAccountActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/adapters/JoinAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/adapters/JoinAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/adapters/ParticipantAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/adapters/ParticipantAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/dataSimulation/fakeBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/data/fakeBackend.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/dataSimulation/fakeTempObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/data/fakeTempObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/dataSimulation/fakeUsers.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/data/fakeUsers.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,7 +125,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\victo\.gradle\wrapper\dists\gradle-9.4.1-bin\arn2x92ynaizyzdaamcbpbhtj\gradle-9.4.1" javaHome="D:\Program files\Android\Android Studio\jbr" gradleVersion="9.4.1" />
   <component name="ProblemsViewState">
@@ -131,7 +152,6 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
@@ -247,12 +267,12 @@
       <map>
         <entry key="com.tfm.es_plit">
           <value>
-            <CheckInfo lastCheckTimestamp="1781943470789" />
+            <CheckInfo lastCheckTimestamp="1782034851837" />
           </value>
         </entry>
         <entry key="com.tfm.es_plit.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1781943470789" />
+            <CheckInfo lastCheckTimestamp="1782034851837" />
           </value>
         </entry>
       </map>

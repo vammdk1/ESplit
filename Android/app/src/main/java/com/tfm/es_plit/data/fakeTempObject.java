@@ -1,9 +1,8 @@
-package com.tfm.es_plit.dataSimulation;
+package com.tfm.es_plit.data;
 
 import com.tfm.es_plit.models.Participant;
 
 import java.util.List;
-import java.util.UUID;
 
 public class fakeTempObject {
 

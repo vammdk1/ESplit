@@ -10,9 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.adapters.JoinAdapter;
-import com.tfm.es_plit.adapters.ParticipantAdapter;
 import com.tfm.es_plit.models.User;
-import com.tfm.es_plit.dataSimulation.fakeUsers;
+import com.tfm.es_plit.data.fakeUsers;
 import com.tfm.es_plit.models.Participant;
 
 import java.util.ArrayList;

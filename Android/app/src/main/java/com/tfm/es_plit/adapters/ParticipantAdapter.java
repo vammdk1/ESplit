@@ -6,39 +6,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.models.User;
-import com.tfm.es_plit.dataSimulation.fakeUsers;
+import com.tfm.es_plit.network.UserRepository;
 import com.tfm.es_plit.models.Participant;
 
 import java.util.List;
 
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.ViewHolder> {
 
-    private fakeUsers fakeRepository;
+    private UserRepository userRepository;
 
-    /**
-     * Intefaz para procesar lógico dentro del adaptador
-     * */
     public interface OnParticipantActionListener {
         void onRemove(Participant participant);
         void onConfirm(Participant participant);
     }
 
-    //Lista de participantes a dibujar
     private final List<Participant> participants;
-
-    //Listener para realziar acciones en el código
     private final OnParticipantActionListener listener;
 
-    public ParticipantAdapter(List<Participant> participants, OnParticipantActionListener listener, fakeUsers fakeRepository) {
+    public ParticipantAdapter(List<Participant> participants, OnParticipantActionListener listener, UserRepository userRepository) {
         this.participants = participants;
         this.listener = listener;
-        this.fakeRepository=fakeRepository;
-
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -56,23 +47,31 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
         holder.btRemove.setOnClickListener(v -> {
             int pos = holder.getAbsoluteAdapterPosition();
-            if (pos != RecyclerView.NO_ID){
+            if (pos != RecyclerView.NO_POSITION) {
                 participants.remove(pos);
                 notifyItemRemoved(pos);
-                listener.onRemove(p); // avisa a la Activity con el participante eliminado
+                listener.onRemove(p);
             }
         });
 
         holder.btConfirm.setOnClickListener(v -> {
-            //confirmar montos del usuario
-            User user = fakeRepository.getUserById(p.getid());
-            if (user != null && user.getFunds() >= p.getAmount()){
-                holder.tvName.setTextColor(Color.parseColor("#05d61a"));
-                p.setConfirmationStatus(true);
-            } else {
-                holder.tvName.setTextColor(Color.parseColor("#f8352a"));
-            }
-            listener.onConfirm(p);
+            userRepository.getUserById(p.getid(), new UserRepository.UserCallback() {
+                @Override
+                public void onSuccess(User user) {
+                    if (user.getFunds() >= p.getAmount()) {
+                        holder.tvName.setTextColor(Color.parseColor("#05d61a"));
+                        p.setConfirmationStatus(true);
+                    } else {
+                        holder.tvName.setTextColor(Color.parseColor("#f8352a"));
+                    }
+                    listener.onConfirm(p);
+                }
+
+                @Override
+                public void onError(String message) {
+                    holder.tvName.setTextColor(Color.parseColor("#f8352a"));
+                }
+            });
         });
     }
 
@@ -81,7 +80,6 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         return participants.size();
     }
 
-    //declaración de elementos visuales
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvAmount;
         Button btConfirm, btRemove;

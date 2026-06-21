@@ -2,51 +2,50 @@ package com.tfm.es_plit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.adapters.ParticipantAdapter;
 import com.tfm.es_plit.models.User;
-import com.tfm.es_plit.dataSimulation.fakeUsers;
 import com.tfm.es_plit.models.Participant;
+import com.tfm.es_plit.network.UserRepository;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PaymentHostRoomActivity extends AppCompatActivity {
-    //Boton para cancelar proceso
+
     private Button btCancel;
     private Button btStartpayment;
     private List<Participant> plist = new ArrayList<>();
     private double totalAmount;
     private double amounPerPerson;
-    private TextView hostStringAmmount ;
+    private TextView hostStringAmmount;
     private double hostAmmount;
-    private TextView splitAmmount ;
+    private TextView splitAmmount;
     private ParticipantAdapter adapter;
+    private UserRepository userRepository;
+    private int hostId;
 
-    //logica para dividir gastos equitatvamente
-    private void calcularMontos(){
+    private void calcularMontos() {
         int numParticipants = plist.size();
-        amounPerPerson = totalAmount / (numParticipants+1);
-        // Asignar la parte a cada participante
+        amounPerPerson = totalAmount / (numParticipants + 1);
         for (Participant p : plist) {
             p.setAmount(amounPerPerson);
         }
         hostAmmount = amounPerPerson;
         hostStringAmmount.setText(String.format("%.2f €", amounPerPerson));
-    };
+    }
 
-    //Verifica si todos los participantes pueden pagar
-    private boolean paymentStatusCheck(){
-        for (Participant p: plist){
-            if (!p.getConfirmationStatus()){
+    private boolean paymentStatusCheck() {
+        for (Participant p : plist) {
+            if (!p.getConfirmationStatus()) {
                 return false;
             }
         }
@@ -57,66 +56,84 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hostroom);
-
         btCancel = findViewById(R.id.btnHostCancel);
         btStartpayment = findViewById(R.id.btnHostPay);
 
-        //recibir dinero
-        totalAmount = getIntent().getDoubleExtra("TOTAL_AMOUNT",0.0);
-        int hostId = getIntent().getIntExtra("ACTUAL_USER",0);
+        totalAmount = getIntent().getDoubleExtra("TOTAL_AMOUNT", 0.0);
+        hostId = getIntent().getIntExtra("ACTUAL_USER", 0);
         hostStringAmmount = findViewById(R.id.textUnmanagedAmmount);
         splitAmmount = findViewById(R.id.totalSplitAmmount);
-
-        // Datos simulados
         splitAmmount.setText(String.format("%.2f €", totalAmount));
-        fakeUsers repository = new fakeUsers(this);
 
-        //Hacer bucle de lectura donde se reciben los IDs de los participantes
-        //Objeto que almacena los ids de los invitados NFC
-        //Semáforo secundairo que busca IDs
-
-        //OBJETO NFC falso
-        int[] Lids = {1,2};
-        User tuser = repository.getUserById(Lids[0]);
-        plist.add(new Participant(tuser.getId(),tuser.getName()));
-        tuser = repository.getUserById(Lids[1]);
-        plist.add(new Participant(tuser.getId(),tuser.getName()));
-
-        // Dividir entre participantes
-        calcularMontos();
+        userRepository = new UserRepository();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
-            @Override
-            public void onRemove(Participant participant) {
-                calcularMontos();
-                adapter.notifyDataSetChanged(); //actuliza los montos
-            }
 
-            @Override
-            public void onConfirm(Participant participant) {
+        //OBJETO NFC falso
+        int[] Lids = {1, 2};
+        AtomicInteger pending = new AtomicInteger(Lids.length);
 
-            }
-        }, repository);
+        for (int id : Lids) {
+            userRepository.getUserById(id, new UserRepository.UserCallback() {
+                @Override
+                public void onSuccess(User user) {
+                    plist.add(new Participant(user.getId(), user.getName()));
+                    checkAllLoaded();
+                }
 
-        recyclerView.setAdapter(adapter);
+                @Override
+                public void onError(String message) {
+                    Log.e("API", "Error cargando usuario " + id + ": " + message);
+                    checkAllLoaded();
+                }
 
-        //botones
-        btCancel.setOnClickListener( view -> {
-            finish();
-        });
+                private void checkAllLoaded() {
+                    if (pending.decrementAndGet() == 0) {
+                        runOnUiThread(() -> {
+                            calcularMontos();
+
+                            adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
+                                @Override
+                                public void onRemove(Participant participant) {
+                                    calcularMontos();
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onConfirm(Participant participant) {
+                                }
+                            }, userRepository);
+
+                            recyclerView.setAdapter(adapter);
+                        });
+                    }
+                }
+            });
+        }
+
+        btCancel.setOnClickListener(view -> finish());
 
         btStartpayment.setOnClickListener(v -> {
-            if (paymentStatusCheck()){
-                Intent intent = new Intent(PaymentHostRoomActivity.this,PaymentPostHostRoomActivity.class);
-                User hUser = repository.getUserById(hostId);
-                Participant hostParticipant = new Participant(hUser.getId(),hUser.getName());
-                hostParticipant.setAmount(hostAmmount);
-                plist.add(hostParticipant);
-                intent.putExtra("pList", (Serializable) plist);
-                intent.putExtra("TOTAL_AMOUNT", totalAmount);
-                startActivity(intent);
+            if (paymentStatusCheck()) {
+                userRepository.getUserById(hostId, new UserRepository.UserCallback() {
+                    @Override
+                    public void onSuccess(User hUser) {
+                        Participant hostParticipant = new Participant(hUser.getId(), hUser.getName());
+                        hostParticipant.setAmount(hostAmmount);
+                        plist.add(hostParticipant);
+
+                        Intent intent = new Intent(PaymentHostRoomActivity.this, PaymentPostHostRoomActivity.class);
+                        intent.putExtra("pList", (Serializable) plist);
+                        intent.putExtra("TOTAL_AMOUNT", totalAmount);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("API", "Error cargando host: " + message);
+                    }
+                });
             }
         });
     }

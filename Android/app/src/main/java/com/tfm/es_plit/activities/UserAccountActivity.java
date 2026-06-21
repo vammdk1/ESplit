@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.models.User;
-import com.tfm.es_plit.dataSimulation.fakeUsers;
+import com.tfm.es_plit.data.fakeUsers;
 
 public class UserAccountActivity extends AppCompatActivity {
 

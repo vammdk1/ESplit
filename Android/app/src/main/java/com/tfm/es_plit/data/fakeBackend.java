@@ -1,4 +1,4 @@
-package com.tfm.es_plit.dataSimulation;
+package com.tfm.es_plit.data;
 
 import android.util.Log;
 

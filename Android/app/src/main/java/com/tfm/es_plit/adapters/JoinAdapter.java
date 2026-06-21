@@ -1,6 +1,5 @@
 package com.tfm.es_plit.adapters;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tfm.es_plit.R;
-import com.tfm.es_plit.dataSimulation.fakeUsers;
+import com.tfm.es_plit.data.fakeUsers;
 import com.tfm.es_plit.models.Participant;
-import com.tfm.es_plit.models.User;
 
 import java.util.List;
 
