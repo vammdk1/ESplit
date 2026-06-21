@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.models.User;
-import com.tfm.es_plit.data.fakeUsers;
 import com.tfm.es_plit.network.UserRepository;
 
 public class UserAccountActivity extends AppCompatActivity {
@@ -20,7 +19,7 @@ public class UserAccountActivity extends AppCompatActivity {
     TextView userNametext;
     TextView userFundsText;
     private UserRepository userRepository;
-    private int hostid;
+    private int hostId;
 
 
 
@@ -32,14 +31,14 @@ public class UserAccountActivity extends AppCompatActivity {
         userNametext = findViewById(R.id.userUsername);
         userFundsText = findViewById(R.id.userFunds);
 
+        hostId = getIntent().getIntExtra("ACTUAL_USER", 0);
 
         userRepository = new UserRepository();
-        userRepository.getUserByEmail("admin@mail.com", new UserRepository.UserCallback() {
+        userRepository.getUserById(hostId, new UserRepository.UserCallback() {
             @Override
             public void onSuccess(User user) {
                 userNametext.setText(user.getName());
                 userFundsText.setText(String.format("%.2f €",user.getFunds()));
-                hostid=user.getId();
             }
 
             @Override
@@ -51,7 +50,7 @@ public class UserAccountActivity extends AppCompatActivity {
 
         btnHostPaymentRoom.setOnClickListener(v -> {
             Intent intent = new Intent(UserAccountActivity.this, PreHostRoomActivity.class);
-            intent.putExtra("ACTUAL_USER", hostid);
+            intent.putExtra("ACTUAL_USER", this.hostId);
             startActivity(intent);
         });
 
@@ -59,7 +58,7 @@ public class UserAccountActivity extends AppCompatActivity {
 
         btnJoinPaymentRoom.setOnClickListener(v -> {
             Intent intent = new Intent(UserAccountActivity.this, PrePaymentJoinRoomActivity.class);
-            intent.putExtra("ACTUAL_USER", hostid);
+            intent.putExtra("ACTUAL_USER", this.hostId);
             startActivity(intent);
         });
     }

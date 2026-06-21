@@ -31,8 +31,7 @@
                 android:textSize="20dp"
                 android:text="Ingresa monto de la factura"
                 android:textAlignment="center"
-                android:textColor="@color/eggshell"
-                android:layout_marginEnd="8dp"/>
+                android:textColor="@color/eggshell"/>
 
             <EditText
                 android:id="@+id/textAmountToPay"

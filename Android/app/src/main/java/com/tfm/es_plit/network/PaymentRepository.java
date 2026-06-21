@@ -2,7 +2,6 @@ package com.tfm.es_plit.network;
 
 import com.tfm.es_plit.models.Participant;
 
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -21,14 +20,19 @@ public class PaymentRepository {
         void onError(String message);
     }
 
+    public interface AddParticipantCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
     public interface PayCallback {
         void onSuccess(boolean paymentStatus);
         void onError(String message);
     }
 
-    public void createPayment(double totalAmount, List<Participant> participants, CreatePaymentCallback callback) {
-        PaymentCreate body = new PaymentCreate(totalAmount, participants);
-        apiService.createPayment(body).enqueue(new Callback<PaymentResponse>() {
+    public void createEmptyPayment(double totalAmount, CreatePaymentCallback callback) {
+        PaymentCreateEmpty body = new PaymentCreateEmpty(totalAmount);
+        apiService.createEmptyPayment(body).enqueue(new Callback<PaymentResponse>() {
             @Override
             public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -40,6 +44,25 @@ public class PaymentRepository {
 
             @Override
             public void onFailure(Call<PaymentResponse> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void addParticipant(int paymentId, Participant p, AddParticipantCallback callback) {
+        ParticipantAdd body = new ParticipantAdd(p.getid(), p.getName(), p.getAmount());
+        apiService.addParticipant(paymentId, body).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                } else {
+                    callback.onError("Error al añadir participante");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

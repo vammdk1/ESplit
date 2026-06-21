@@ -18,7 +18,7 @@ public class PaymentPostHostRoomActivity extends AppCompatActivity {
     private Button btNextActivity;
     private List<Participant> plist = new ArrayList<>();
     private PaymentRepository paymentRepository;
-    private int tempPaymentId;
+    private int paymentId;
     private double totalAmount;
 
     @Override
@@ -30,26 +30,14 @@ public class PaymentPostHostRoomActivity extends AppCompatActivity {
 
         plist = (ArrayList<Participant>) getIntent().getSerializableExtra("pList");
         totalAmount = getIntent().getDoubleExtra("TOTAL_AMOUNT", 0.0);
+        paymentId = getIntent().getIntExtra("PAYMENT_ID", 0);
 
         paymentRepository = new PaymentRepository();
-
-        paymentRepository.createPayment(totalAmount, plist, new PaymentRepository.CreatePaymentCallback() {
-            @Override
-            public void onSuccess(int paymentId) {
-                tempPaymentId = paymentId;
-                Log.d("API", "Payment creado con id " + paymentId);
-            }
-
-            @Override
-            public void onError(String message) {
-                Log.e("API", "Error creando payment: " + message);
-            }
-        });
 
         btCancel.setOnClickListener(view -> finish());
 
         btNextActivity.setOnClickListener(v -> {
-            paymentRepository.pay(tempPaymentId, totalAmount, new PaymentRepository.PayCallback() {
+            paymentRepository.pay(paymentId, totalAmount, new PaymentRepository.PayCallback() {
                 @Override
                 public void onSuccess(boolean paymentStatus) {
                     if (paymentStatus) {

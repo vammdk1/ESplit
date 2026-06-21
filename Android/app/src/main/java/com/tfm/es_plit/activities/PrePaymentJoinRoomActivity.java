@@ -22,10 +22,11 @@ public class PrePaymentJoinRoomActivity extends AppCompatActivity {
         btnCancel = findViewById(R.id.btnHostCancel);
         btnStart = findViewById(R.id.btnNextActivity);
 
-        double amount = Double.parseDouble("150");
+        int hostId = getIntent().getIntExtra("ACTUAL_USER", 0);
+
         btnStart.setOnClickListener(v -> {
                 Intent intent = new Intent(PrePaymentJoinRoomActivity.this, PaymentJoinRoomActivity.class);
-                intent.putExtra("TOTAL_AMOUNT", amount);
+                intent.putExtra("ACTUAL_USER", hostId);
                 startActivity(intent);
         });
 

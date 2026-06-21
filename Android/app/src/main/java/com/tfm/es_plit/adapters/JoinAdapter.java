@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.data.fakeUsers;
 import com.tfm.es_plit.models.Participant;
+import com.tfm.es_plit.network.PaymentSocket;
 
 import java.util.List;
 
 public class JoinAdapter extends RecyclerView.Adapter<JoinAdapter.ViewHolder> {
 
-    private fakeUsers fakeRepository;
+    private PaymentSocket socket;
 
     /**
      * Intefaz para procesar lógico dentro del adaptador
@@ -31,9 +32,9 @@ public class JoinAdapter extends RecyclerView.Adapter<JoinAdapter.ViewHolder> {
 
     //Listener para realziar acciones en el código
 
-    public JoinAdapter(List<Participant> participants, fakeUsers fakeRepository) {
+    public JoinAdapter(List<Participant> participants, PaymentSocket socket) {
         this.participants = participants;
-        this.fakeRepository=fakeRepository;
+        this.socket=socket;
 
     }
 

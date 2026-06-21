@@ -47,6 +47,43 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/loginEmail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:text="admin@mail.com"
+                android:textColorHint="@color/white"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:inputType="textEmailAddress"
+                android:background="@android:color/transparent"
+                android:padding="5dp"/>
+
+            <EditText
+                android:id="@+id/loginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="admin1234"
+                android:textSize="20sp"
+                android:textColorHint="@color/white"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:inputType="textPassword"
+                android:background="@android:color/transparent"
+                android:padding="5dp"/>
+
+        </LinearLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -59,16 +96,7 @@
             app:cornerRadius="14dp"
             />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegister"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:text="Registrarse"
-            android:textColor="@color/white"
-            app:strokeColor="@color/white"
-            app:cornerRadius="14dp"/>
+
 
     </LinearLayout>
 

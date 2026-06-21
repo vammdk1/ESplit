@@ -3,6 +3,7 @@ package com.tfm.es_plit.network;
 import com.tfm.es_plit.models.User;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,6 +24,36 @@ public class UserRepository {
     public interface UsersListCallback {
         void onSuccess(List<User> users);
         void onError(String message);
+    }
+    public interface PendingPaymentCallback {
+        void onSuccess(boolean hasInvitation, int paymentId, double amount);
+        void onError(String message);
+    }
+
+    public void getPendingPayment(int userId, PendingPaymentCallback callback) {
+        apiService.getPendingPayment(userId).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Map<String, Object> body = response.body();
+                    boolean hasInvitation = Boolean.TRUE.equals(body.get("has_invitation"));
+                    if (hasInvitation) {
+                        int paymentId = ((Double) body.get("payment_id")).intValue();
+                        double amount = (Double) body.get("amount");
+                        callback.onSuccess(true, paymentId, amount);
+                    } else {
+                        callback.onSuccess(false, 0, 0.0);
+                    }
+                } else {
+                    callback.onError("Error consultando invitación");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
     }
 
     public void getUserById(int id, UserCallback callback) {
@@ -77,4 +108,5 @@ public class UserRepository {
             }
         });
     }
+
 }
