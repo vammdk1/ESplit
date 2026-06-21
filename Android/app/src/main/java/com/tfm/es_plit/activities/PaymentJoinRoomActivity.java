@@ -89,12 +89,21 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
             @Override
             public void onMessage(JSONObject message) {
                 try {
-                    if ("confirm_request".equals(message.getString("type"))
+                    String type = message.getString("type");
+
+                    if ("confirm_request".equals(type)
                             && message.getInt("user_id") == currentUserId) {
-
                         double amount = message.getDouble("amount");
-
                         runOnUiThread(() -> showConfirmDialog(amount));
+
+                    } else if ("amount_updated".equals(type)
+                            && message.getInt("user_id") == currentUserId) {
+                        double newAmount = message.getDouble("amount");
+                        runOnUiThread(() -> {
+                            totalAmmount = newAmount;
+                            hostAmmount.setText(String.format("%.2f €", newAmount));
+                            Log.d("WS", "Monto actualizado a " + newAmount + ", debes volver a confirmar");
+                        });
                     }
                 } catch (Exception e) {
                     Log.e("WS", "Error procesando mensaje: " + e.getMessage());

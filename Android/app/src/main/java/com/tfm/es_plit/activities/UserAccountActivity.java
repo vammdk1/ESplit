@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfm.es_plit.R;
+import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.network.UserRepository;
 
@@ -31,7 +32,8 @@ public class UserAccountActivity extends AppCompatActivity {
         userNametext = findViewById(R.id.userUsername);
         userFundsText = findViewById(R.id.userFunds);
 
-        hostId = getIntent().getIntExtra("ACTUAL_USER", 0);
+        SessionManager session = new SessionManager(this);
+        hostId = session.getUserId();
 
         userRepository = new UserRepository();
         userRepository.getUserById(hostId, new UserRepository.UserCallback() {

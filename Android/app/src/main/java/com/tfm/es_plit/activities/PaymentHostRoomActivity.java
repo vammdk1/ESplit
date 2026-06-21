@@ -42,9 +42,37 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     private void calcularMontos() {
         int numParticipants = plist.size();
         amounPerPerson = totalAmount / (numParticipants + 1);
+
         for (Participant p : plist) {
             p.setAmount(amounPerPerson);
+            p.setConfirmationStatus(false);
+
+            // Actualiza en el backend
+            paymentRepository.updateParticipantAmount(paymentId, p.getid(), amounPerPerson,
+                    new PaymentRepository.UpdateParticipantCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d("API", "Monto actualizado para " + p.getid());
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            Log.e("API", "Error actualizando monto: " + message);
+                        }
+                    });
+
+            // Notifica al participante en vivo por WebSocket
+            try {
+                JSONObject update = new JSONObject();
+                update.put("type", "amount_updated");
+                update.put("user_id", p.getid());
+                update.put("amount", amounPerPerson);
+                socket.send(update);
+            } catch (Exception e) {
+                Log.e("WS", "Error notificando cambio de monto: " + e.getMessage());
+            }
         }
+
         hostAmmount = amounPerPerson;
         hostStringAmmount.setText(String.format("%.2f €", amounPerPerson));
     }
@@ -157,6 +185,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
                                 @Override
                                 public void onRemove(Participant participant) {
                                     calcularMontos();
+                                    //Eliminar todas las confirmaciones y actualizar el monto de todos los usarios que quedan
                                     adapter.notifyDataSetChanged();
                                 }
 
@@ -183,11 +212,23 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
                         hostParticipant.setAmount(hostAmmount);
                         plist.add(hostParticipant);
 
-                        Intent intent = new Intent(PaymentHostRoomActivity.this, PaymentPostHostRoomActivity.class);
-                        intent.putExtra("pList", (Serializable) plist);
-                        intent.putExtra("TOTAL_AMOUNT", totalAmount);
-                        intent.putExtra("PAYMENT_ID", paymentId);
-                        startActivity(intent);
+                        paymentRepository.addParticipant(paymentId, hostParticipant, new PaymentRepository.AddParticipantCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Log.d("API", "Host añadido a la sala");
+
+                                Intent intent = new Intent(PaymentHostRoomActivity.this, PaymentPostHostRoomActivity.class);
+                                intent.putExtra("pList", (Serializable) plist);
+                                intent.putExtra("TOTAL_AMOUNT", totalAmount);
+                                intent.putExtra("PAYMENT_ID", paymentId);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                Log.e("API", "Error añadiendo host: " + message);
+                            }
+                        });
                     }
 
                     @Override

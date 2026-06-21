@@ -30,6 +30,11 @@ public class PaymentRepository {
         void onError(String message);
     }
 
+    public interface UpdateParticipantCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
     public void createEmptyPayment(double totalAmount, CreatePaymentCallback callback) {
         PaymentCreateEmpty body = new PaymentCreateEmpty(totalAmount);
         apiService.createEmptyPayment(body).enqueue(new Callback<PaymentResponse>() {
@@ -82,6 +87,24 @@ public class PaymentRepository {
 
             @Override
             public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+    public void updateParticipantAmount(int paymentId, int userId, double amount, UpdateParticipantCallback callback) {
+        ParticipantUpdate body = new ParticipantUpdate(userId, amount);
+        apiService.updateParticipantAmount(paymentId, userId, body).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                } else {
+                    callback.onError("Error actualizando monto");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

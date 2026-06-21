@@ -9,6 +9,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfm.es_plit.activities.UserAccountActivity;
+import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.network.UserRepository;
 
@@ -33,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(User user) {
                     if(user.getPassword().equals(pass.getText().toString())){
+                        SessionManager session = new SessionManager(MainActivity.this);
+                        session.saveUserId(user.getId());
+
                         Intent intent = new Intent(MainActivity.this, UserAccountActivity.class);
-                        intent.putExtra("ACTUAL_USER", user.getId());
                         startActivity(intent);
                     }
                 }

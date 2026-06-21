@@ -52,7 +52,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         if (p.getConfirmationStatus()) {
             holder.tvName.setTextColor(Color.parseColor("#05d61a"));
         } else {
-            holder.tvName.setTextColor(Color.BLACK); // o el color por defecto que uses
+            holder.tvName.setTextColor(Color.parseColor("#FFFFFF"));
         }
 
         holder.btRemove.setOnClickListener(v -> {

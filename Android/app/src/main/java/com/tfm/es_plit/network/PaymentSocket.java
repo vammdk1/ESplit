@@ -38,6 +38,10 @@ public class PaymentSocket {
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                Log.e("WS", "onFailure: " + t.getClass().getSimpleName() + " - " + t.getMessage(), t);
+                if (response != null) {
+                    Log.e("WS", "Response code: " + response.code());
+                }
                 listener.onError(t.getMessage());
             }
         });
@@ -54,4 +58,5 @@ public class PaymentSocket {
             webSocket.close(1000, "Activity cerrada");
         }
     }
+
 }
