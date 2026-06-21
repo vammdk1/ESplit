@@ -42,6 +42,23 @@ public class UserRepository {
             }
         });
     }
+    public void getUserByEmail(String email, UserCallback callback) {
+        apiService.getUserByEmail(email).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onError("Usuario no encontrado");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
 
     public void getUsers(UsersListCallback callback) {
         apiService.getUsers().enqueue(new Callback<List<User>>() {

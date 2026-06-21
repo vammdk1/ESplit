@@ -1,24 +1,51 @@
-# Compiled class file
-*.class
+# ============================
+# Android / Java / Gradle
+# ============================
+android/*.iml
+android/.gradle/
+android/local.properties
+android/.idea/
+android/.DS_Store
+android/build/
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+android/*.apk
+android/*.ap_
+android/*.dex
+android/*.class
 
-# Log file
+# Generado por cada módulo
+android/**/build/
+android/**/.cxx/
+
+# Local config (no se versiona, cada dev tiene la suya)
+android/local.properties
+
+# Logs
+android/*.log
+
+# Keystore (nunca subir esto)
+android/*.jks
+android/*.keystore
+
+# ============================
+# Python / FastAPI
+# ============================
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/venv/
+backend/.venv/
+backend/env/
+backend/.env
+backend/*.db
+backend/*.sqlite3
+backend/.pytest_cache/
+
+# ============================
+# General / Sistema operativo
+# ============================
+.DS_Store
+Thumbs.db
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*

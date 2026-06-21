@@ -18,6 +18,8 @@ public interface ApiService {
 
     @GET("users/{id}")
     Call<User> getUserById(@Path("id") int id);
+    @GET("users/by-email/{email}")
+    Call<User> getUserByEmail(@Path("email") String email);
 
     @POST("payments/")
     Call<PaymentResponse> createPayment(@Body PaymentCreate payment);
