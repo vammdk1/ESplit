@@ -31,7 +31,7 @@ class Payment(SQLModel, table=True):
     participants: List[Participant] = Relationship(back_populates="payment")
 
 
-# ---- Modelos solo para entrada/salida de la API (no son tablas) ----
+# ---- Modelos solo para entrada/salida de la API ----
 
 class ParticipantCreate(SQLModel):
     user_id: int
@@ -42,3 +42,13 @@ class ParticipantCreate(SQLModel):
 class PaymentCreate(SQLModel):
     total_amount: float
     participants: List[ParticipantCreate]
+
+# ---- Modelos para gestionar el websocket -----
+class PaymentCreateEmpty(SQLModel):
+    total_amount: float
+
+
+class ParticipantAdd(SQLModel):
+    user_id: int
+    name: str
+    amount: float

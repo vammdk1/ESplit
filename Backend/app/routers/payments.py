@@ -1,9 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import SQLModel, Session
 from app.database import get_session
-from app.models import Payment, Participant, PaymentCreate, User
+from app.models import Payment, Participant, User
+from app.connection_manager import manager
 
 router = APIRouter(prefix="/payments", tags=["payments"])
+
+
+class PaymentCreateEmpty(SQLModel):
+    total_amount: float
+
+
+class ParticipantAdd(SQLModel):
+    user_id: int
+    name: str
+    amount: float
 
 
 class PaymentResponse(SQLModel):
@@ -17,24 +28,30 @@ class PayResponse(SQLModel):
 
 
 @router.post("/", response_model=PaymentResponse)
-def create_payment(payment_data: PaymentCreate, session: Session = Depends(get_session)):
+def create_payment(payment_data: PaymentCreateEmpty, session: Session = Depends(get_session)):
     payment = Payment(total_amount=payment_data.total_amount)
     session.add(payment)
     session.commit()
     session.refresh(payment)
-
-    for p in payment_data.participants:
-        participant = Participant(
-            user_id=p.user_id,
-            name=p.name,
-            amount=p.amount,
-            payment_id=payment.id
-        )
-        session.add(participant)
-
-    session.commit()
-    session.refresh(payment)
     return payment
+
+
+@router.post("/{payment_id}/participants", response_model=Participant)
+def add_participant(payment_id: int, data: ParticipantAdd, session: Session = Depends(get_session)):
+    payment = session.get(Payment, payment_id)
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+
+    participant = Participant(
+        user_id=data.user_id,
+        name=data.name,
+        amount=data.amount,
+        payment_id=payment_id
+    )
+    session.add(participant)
+    session.commit()
+    session.refresh(participant)
+    return participant
 
 
 @router.get("/{payment_id}", response_model=Payment)

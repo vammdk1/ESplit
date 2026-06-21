@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import create_db_and_tables
-from app.routers import users, payments
+from app.routers import users, payments, ws
 
 app = FastAPI(title="E-Split API")
 
@@ -12,6 +12,7 @@ def on_startup():
 
 app.include_router(users.router)
 app.include_router(payments.router)
+app.include_router(ws.router)
 
 
 @app.get("/")
