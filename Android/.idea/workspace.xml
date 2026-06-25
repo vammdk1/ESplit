@@ -62,25 +62,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0a6ea2ef-d079-42b1-8da0-676a5ccd950f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/data/SessionManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ParticipantUpdate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentDetail.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentHostRoomActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentJoinRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PaymentJoinRoomActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/UserAccountActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/UserAccountActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/adapters/ParticipantAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/adapters/ParticipantAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PreHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/PreHostRoomActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentSocket.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

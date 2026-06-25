@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.adapters.JoinAdapter;
+import com.tfm.es_plit.network.PaymentRepository;
 import com.tfm.es_plit.network.UserRepository;
 import com.tfm.es_plit.network.PaymentSocket;
 import com.tfm.es_plit.models.Participant;
@@ -26,6 +27,8 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
     private TextView splitAmmount;
     private JoinAdapter adapter;
     private UserRepository userRepository;
+    private PaymentRepository paymentRepository;
+
     private PaymentSocket socket;
     private int currentUserId;
     private int paymentId;
@@ -41,6 +44,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         hostAmmount = findViewById(R.id.textUnmanagedAmmount);
         splitAmmount = findViewById(R.id.totalSplitAmmount);
 
+        paymentRepository = new PaymentRepository();
         userRepository = new UserRepository();
         socket = new PaymentSocket();
 
@@ -91,18 +95,21 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                 try {
                     String type = message.getString("type");
 
-                    if ("confirm_request".equals(type)
-                            && message.getInt("user_id") == currentUserId) {
+                    if ("confirm_request".equals(type) && message.getInt("user_id") == currentUserId) {
                         double amount = message.getDouble("amount");
                         runOnUiThread(() -> showConfirmDialog(amount));
 
-                    } else if ("amount_updated".equals(type)
-                            && message.getInt("user_id") == currentUserId) {
+                    } else if ("amount_updated".equals(type) && message.getInt("user_id") == currentUserId) {
                         double newAmount = message.getDouble("amount");
                         runOnUiThread(() -> {
                             totalAmmount = newAmount;
                             hostAmmount.setText(String.format("%.2f €", newAmount));
-                            Log.d("WS", "Monto actualizado a " + newAmount + ", debes volver a confirmar");
+                        });
+
+                    } else if ("payment_completed".equals(type)) {
+                        runOnUiThread(() -> {
+                            Log.d("WS", "Pago completado, cerrando sala");
+                            finish();
                         });
                     }
                 } catch (Exception e) {

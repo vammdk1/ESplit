@@ -34,7 +34,7 @@ public class PreHostRoomActivity extends AppCompatActivity {
             }
             double amount = Double.parseDouble(input);
             if (amount > 0) {
-                btnStart.setEnabled(false); // evita doble click mientras se crea el payment
+                btnStart.setEnabled(false); // bloquea posibles doble click mientras se crea el payment
 
                 paymentRepository.createEmptyPayment(amount, new PaymentRepository.CreatePaymentCallback() {
                     @Override

@@ -22,6 +22,8 @@ public interface ApiService {
     Call<User> getUserByEmail(@Path("email") String email);
     @GET("users/{id}/pending-payment")
     Call<Map<String,Object>>getPendingPayment(@Path("id") int userID);
+    @GET("payments/{id}")
+    Call<PaymentDetail> getPaymentDetail(@Path("id") int paymentId);
     @POST("payments/")
     Call<PaymentResponse> createEmptyPayment(@Body PaymentCreateEmpty payment);
     @POST("payments/{id}/participants")

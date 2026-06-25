@@ -39,8 +39,8 @@ Backend/venv/
 Backend/.venv/
 Backend/env/
 Backend/.env
-Backend/*.db
-Backend/*.sqlite3
+#Backend/*.db
+#Backend/*.sqlite3
 Backend/.pytest_cache/
 
 # ============================

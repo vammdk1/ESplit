@@ -35,6 +35,11 @@ public class PaymentRepository {
         void onError(String message);
     }
 
+    public interface PaymentDetailCallback {
+        void onSuccess(PaymentDetail detail);
+        void onError(String message);
+    }
+
     public void createEmptyPayment(double totalAmount, CreatePaymentCallback callback) {
         PaymentCreateEmpty body = new PaymentCreateEmpty(totalAmount);
         apiService.createEmptyPayment(body).enqueue(new Callback<PaymentResponse>() {
@@ -105,6 +110,24 @@ public class PaymentRepository {
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void getPaymentDetail(int paymentId, PaymentDetailCallback callback) {
+        apiService.getPaymentDetail(paymentId).enqueue(new Callback<PaymentDetail>() {
+            @Override
+            public void onResponse(Call<PaymentDetail> call, Response<PaymentDetail> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onError("Error obteniendo detalle del pago");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PaymentDetail> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });
