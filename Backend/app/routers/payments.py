@@ -107,3 +107,27 @@ def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_se
 
     return PayResponse(success=True, payment_status=payment.payment_status)
 
+#Breadcast de cierre de pago
+@router.post("/{payment_id}/pay", response_model=PayResponse)
+async def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_session)):
+    payment = session.get(Payment, payment_id)
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+
+    if payment.total_amount != amount_to_pay:
+        return PayResponse(success=False, payment_status=payment.payment_status)
+
+    for participant in payment.participants:
+        user = session.get(User, participant.user_id)
+        if user:
+            user.funds -= participant.amount
+            session.add(user)
+
+    payment.payment_status = True
+    session.add(payment)
+    session.commit()
+    session.refresh(payment)
+
+    await manager.broadcast(payment_id, {"type": "payment_completed"})
+
+    return PayResponse(success=True, payment_status=payment.payment_status)
