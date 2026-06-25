@@ -2,7 +2,7 @@ IP configurada en la aplicación ándroid, hay que configurar el lado receptor c
 192.168.1.194
 Trabajando para hacerla Cloud
 
-Comando para lanzar el backend
+Comando para lanzar el backend desde la carpeta backend
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 URL con los documentos de la API:
