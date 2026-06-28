@@ -131,3 +131,55 @@ async def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(
     await manager.broadcast(payment_id, {"type": "payment_completed"})
 
     return PayResponse(success=True, payment_status=payment.payment_status)
+
+@router.delete("/")
+def delete_all_payments(session: Session = Depends(get_session)):
+    participants = session.exec(select(Participant)).all()
+    for participant in participants:
+        session.delete(participant)
+
+    payments = session.exec(select(Payment)).all()
+    for payment in payments:
+        session.delete(payment)
+
+    session.commit()
+
+    return {
+        "success": True,
+        "message": "All payments deleted"
+    }
+
+@router.delete("/{payment_id}")
+def delete_payment(payment_id: int, session: Session = Depends(get_session)):
+    payment = session.get(Payment, payment_id)
+
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+
+    for participant in payment.participants:
+        session.delete(participant)
+
+    session.delete(payment)
+    session.commit()
+
+    return {
+        "success": True,
+        "message": f"Payment {payment_id} deleted"
+    }
+
+@router.delete("/{payment_id}/participants/{user_id}")
+def remove_participant(payment_id: int, user_id: int, session: Session = Depends(get_session)):
+    participant = session.exec(
+        select(Participant).where(
+            Participant.payment_id == payment_id,
+            Participant.user_id == user_id
+        )
+    ).first()
+
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+
+    session.delete(participant)
+    session.commit()
+
+    return {"success": True}
