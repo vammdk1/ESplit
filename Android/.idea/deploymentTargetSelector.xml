@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-06-21T15:31:27.078408600Z">
+        <DropdownSelection timestamp="2026-06-28T11:41:37.443646600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\victo\.android\avd\Nexus_4_API_25.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=4200b5bde4e494bf" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -15,12 +15,12 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\victo\.android\avd\Nexus_4_API_25.avd" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=4200b5bde4e494bf" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\victo\.android\avd\Pixel_7_API_Baklava.avd" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=65fc69aa" />
               </handle>
             </Target>
           </targets>

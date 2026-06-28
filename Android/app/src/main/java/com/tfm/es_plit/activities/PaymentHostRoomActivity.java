@@ -1,6 +1,7 @@
 package com.tfm.es_plit.activities;
 
 import android.content.Intent;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.tfm.es_plit.models.Participant;
 import com.tfm.es_plit.network.UserRepository;
 import com.tfm.es_plit.network.PaymentRepository;
 import com.tfm.es_plit.network.PaymentSocket;
+import com.tfm.es_plit.nfc.NfcReaderHelper;
 
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class PaymentHostRoomActivity extends AppCompatActivity {
     private Button btCancel;
@@ -38,6 +41,8 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     private PaymentSocket socket;
     private int hostId;
     private int paymentId;
+    private NfcAdapter nfcAdapter;
+    private NfcReaderHelper nfcReaderHelper;
 
     private void calcularMontos() {
         int numParticipants = plist.size();
@@ -105,10 +110,25 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         paymentRepository = new PaymentRepository();
         socket = new PaymentSocket();
 
+        //vista de participantes
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Abre el WebSocket de la sala ya creada
+        //Adaptador para actuializar vistas despuésde inicar NFC
+        adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
+            @Override
+            public void onRemove(Participant participant) {
+                calcularMontos();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onConfirm(Participant participant) {
+            }
+        }, socket);
+        recyclerView.setAdapter(adapter);
+
+            // Abre el WebSocket de la sala ya creada
         socket.connect(paymentId, new PaymentSocket.SocketListener() {
             @Override
             public void onConnected() {
@@ -142,64 +162,49 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
             }
         });
 
-        //OBJETO NFC falso
-        int[] Lids = {1, 3};
-        AtomicInteger pending = new AtomicInteger(Lids.length);
+        //OBJETO NFC
+        //TODO, añadir un semaforo
 
-        for (int id : Lids) {
-            userRepository.getUserById(id, new UserRepository.UserCallback() {
-                @Override
-                public void onSuccess(User user) {
-                    Participant participant = new Participant(user.getId(), user.getName());
-                    plist.add(participant);
-                    checkAllLoaded();
-                }
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        nfcReaderHelper = new NfcReaderHelper(new NfcReaderHelper.NfcReadCallback() {
+            @Override
+            public void onUserIdRead(int userId) {
+                userRepository.getUserById(userId, new UserRepository.UserCallback() {
+                    @Override
+                    public void onSuccess(User user) {
+                        for (Participant p : plist) {
+                            if (p.getid() == user.getId()) return;
+                        }
+                        Participant participant = new Participant(user.getId(), user.getName());
+                        plist.add(participant);
 
-                @Override
-                public void onError(String message) {
-                    Log.e("API", "Error cargando usuario " + id + ": " + message);
-                    checkAllLoaded();
-                }
-
-                private void checkAllLoaded() {
-                    if (pending.decrementAndGet() == 0) {
-                        runOnUiThread(() -> {
-                            calcularMontos();
-
-                            // Registra cada participante en el backend
-                            for (Participant p : plist) {
-                                paymentRepository.addParticipant(paymentId, p, new PaymentRepository.AddParticipantCallback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.d("API", "Participante " + p.getid() + " añadido a la sala");
-                                    }
-
-                                    @Override
-                                    public void onError(String message) {
-                                        Log.e("API", "Error añadiendo participante: " + message);
-                                    }
+                        paymentRepository.addParticipant(paymentId, participant, new PaymentRepository.AddParticipantCallback() {
+                            @Override
+                            public void onSuccess() {
+                                runOnUiThread(() -> {
+                                    calcularMontos();
+                                    if (adapter != null) adapter.notifyDataSetChanged();
                                 });
                             }
-
-                            adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
-                                @Override
-                                public void onRemove(Participant participant) {
-                                    calcularMontos();
-                                    //Eliminar todas las confirmaciones y actualizar el monto de todos los usarios que quedan
-                                    adapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onConfirm(Participant participant) {
-                                }
-                            }, socket);
-
-                            recyclerView.setAdapter(adapter);
+                            @Override
+                            public void onError(String message) {
+                                Log.e("API", "Error añadiendo participante NFC: " + message);
+                            }
                         });
                     }
-                }
-            });
-        }
+                    @Override
+                    public void onError(String message) {
+                        Log.e("NFC", "Error cargando usuario: " + message);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                String error = "Error con NFC, revisar paymenthost";
+                Log.e("NFC", error);
+            }
+        });
 
         btCancel.setOnClickListener(view -> finish());
 
@@ -244,5 +249,22 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         socket.close();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (nfcAdapter != null) {
+            nfcAdapter.enableReaderMode(this, nfcReaderHelper,
+                    NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+                    null);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (nfcAdapter != null) {
+            nfcAdapter.disableReaderMode(this);
+        }
     }
 }

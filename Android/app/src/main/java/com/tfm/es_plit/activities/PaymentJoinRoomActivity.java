@@ -51,7 +51,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipantsJoin);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Simula el "justo después del handshake NFC": pregunta si hay invitación
+        // pregunta si hay invitación
         userRepository.getPendingPayment(currentUserId, new UserRepository.PendingPaymentCallback() {
             @Override
             public void onSuccess(boolean hasInvitation, int receivedPaymentId, double amount) {
@@ -64,6 +64,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                 totalAmmount = amount;
 
                 runOnUiThread(() -> {
+                    Log.d("API", "Hay invitación pendiente para: "+currentUserId);
                     splitAmmount.setText(String.format("%.2f €", totalAmmount));
                     hostAmmount.setText(String.format("%.2f €", totalAmmount));
 

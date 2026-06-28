@@ -112,17 +112,7 @@
             app:cornerRadius="14dp"
             android:layout_marginEnd="8dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnHostPay"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:text="Realizar pago"
-            android:textColor="@color/green"
-            app:strokeColor="@color/green"
-            app:cornerRadius="14dp"
-            />
+
 
     </LinearLayout>
 
