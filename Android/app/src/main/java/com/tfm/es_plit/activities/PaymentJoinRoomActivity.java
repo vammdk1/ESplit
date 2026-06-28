@@ -1,5 +1,6 @@
 package com.tfm.es_plit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.adapters.JoinAdapter;
+import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.network.PaymentRepository;
 import com.tfm.es_plit.network.UserRepository;
 import com.tfm.es_plit.network.PaymentSocket;
@@ -39,7 +41,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_joinroom);
         btCancel = findViewById(R.id.btnHostCancel);
 
-        currentUserId = getIntent().getIntExtra("ACTUAL_USER", 0); // usuario logueado
+        currentUserId = new SessionManager(this).getUserId();
 
         hostAmmount = findViewById(R.id.textUnmanagedAmmount);
         splitAmmount = findViewById(R.id.totalSplitAmmount);
@@ -81,7 +83,11 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
             }
         });
 
-        btCancel.setOnClickListener(view -> finish());
+        btCancel.setOnClickListener(view -> {
+            Intent intent = new Intent(PaymentJoinRoomActivity.this, UserAccountActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
     }
 
     private void connectSocket() {
@@ -110,9 +116,19 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                     } else if ("payment_completed".equals(type)) {
                         runOnUiThread(() -> {
                             Log.d("WS", "Pago completado, cerrando sala");
-                            finish();
+                            Intent intent = new Intent(PaymentJoinRoomActivity.this, UserAccountActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        });
+                    } else if ("participant_removed".equals(type) // eliminar usuario del pago
+                            && message.getInt("user_id") == currentUserId) {
+                        runOnUiThread(() -> {
+                            Intent intent = new Intent(PaymentJoinRoomActivity.this, UserAccountActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                         });
                     }
+
                 } catch (Exception e) {
                     Log.e("WS", "Error procesando mensaje: " + e.getMessage());
                 }
@@ -146,6 +162,8 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
             Log.e("WS", "Error enviando respuesta: " + e.getMessage());
         }
     }
+
+
 
     @Override
     protected void onDestroy() {

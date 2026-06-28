@@ -6,6 +6,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -32,4 +33,6 @@ public interface ApiService {
     Call<Map<String, Object>> pay(@Path("id") int id, @Query("amount_to_pay") double amount);
     @PUT("payments/{paymentId}/participants/{userId}")
     Call<Object> updateParticipantAmount(@Path("paymentId") int paymentId, @Path("userId") int userId, @Body ParticipantUpdate body);
+    @DELETE("payments/{paymentId}/participants/{userId}")
+    Call<Object> removeParticipant(@Path("paymentId") int paymentId, @Path("userId") int userId);
 }

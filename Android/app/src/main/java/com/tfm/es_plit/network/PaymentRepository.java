@@ -40,6 +40,12 @@ public class PaymentRepository {
         void onError(String message);
     }
 
+    public interface RemoveParticipantCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
+
     public void createEmptyPayment(double totalAmount, CreatePaymentCallback callback) {
         PaymentCreateEmpty body = new PaymentCreateEmpty(totalAmount);
         apiService.createEmptyPayment(body).enqueue(new Callback<PaymentResponse>() {
@@ -128,6 +134,24 @@ public class PaymentRepository {
 
             @Override
             public void onFailure(Call<PaymentDetail> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void removeParticipant(int paymentId, int userId, RemoveParticipantCallback callback) {
+        apiService.removeParticipant(paymentId, userId).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                } else {
+                    callback.onError("Error eliminando participante");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

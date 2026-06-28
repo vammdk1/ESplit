@@ -103,6 +103,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         paymentId = getIntent().getIntExtra("PAYMENT_ID", 0);
 
         hostStringAmmount = findViewById(R.id.textUnmanagedAmmount);
+        hostStringAmmount.setText(String.format("%.2f €",totalAmount));
         splitAmmount = findViewById(R.id.totalSplitAmmount);
         splitAmmount.setText(String.format("%.2f €", totalAmount));
 
@@ -116,10 +117,36 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
         //Adaptador para actuializar vistas despuésde inicar NFC
         adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
-            @Override
-            public void onRemove(Participant participant) {
-                calcularMontos();
-                adapter.notifyDataSetChanged();
+
+        @Override
+        public void onRemove(Participant participant) {
+            // Proceso para borrar del backend a un usuario de la sala de pago
+            paymentRepository.removeParticipant(paymentId, participant.getid(),
+                    new PaymentRepository.RemoveParticipantCallback() {
+                        @Override
+                        public void onSuccess() {
+                            // notifica al participante que ha sido eliminado, web socket
+                            try {
+                                JSONObject msg = new JSONObject();
+                                msg.put("type", "participant_removed");
+                                msg.put("user_id", participant.getid());
+                                socket.send(msg);
+                            } catch (Exception e) {
+                                Log.e("WS", "Error notificando eliminación: " + e.getMessage());
+                            }
+
+                            // Acttualizar interfaz gráfica
+                            runOnUiThread(() -> {
+                                calcularMontos();
+                                adapter.notifyDataSetChanged();
+                            });
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            Log.e("API", "Error eliminando participante: " + message);
+                        }
+                    });
             }
 
             @Override
@@ -163,7 +190,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         });
 
         //OBJETO NFC
-        //TODO, añadir un semaforo
+        //TODO, añadir un semaforo ?
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         nfcReaderHelper = new NfcReaderHelper(new NfcReaderHelper.NfcReadCallback() {
