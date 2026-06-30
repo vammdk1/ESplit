@@ -9,7 +9,7 @@ public class ApiClient {
     private static final String BASE_URL = "http://192.168.1.194:8000/";
 
     private static Retrofit retrofit;
-
+    //convierte los mensajes JSON en objetos java y viceversa
     public static Retrofit getInstance() {
         if (retrofit == null) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -18,7 +18,7 @@ public class ApiClient {
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(logging)
                     .build();
-
+            //convierte el JSON en clases según la llamada a la API
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(client)

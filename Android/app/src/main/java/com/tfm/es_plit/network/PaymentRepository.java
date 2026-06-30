@@ -45,6 +45,28 @@ public class PaymentRepository {
         void onError(String message);
     }
 
+    public interface DestroyPaymentRoomCallback {
+        void onsuccess();
+        void onError(String message);
+    }
+
+    public void destroyPaymentRoom(int paymentId, DestroyPaymentRoomCallback callback) {
+        apiService.destroyPaymentRoom(paymentId).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    callback.onsuccess();
+                } else {
+                    callback.onError("Error al destruir la sala de pago");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
 
     public void createEmptyPayment(double totalAmount, CreatePaymentCallback callback) {
         PaymentCreateEmpty body = new PaymentCreateEmpty(totalAmount);

@@ -1,4 +1,4 @@
-package com.tfm.es_plit.activities;
+package com.tfm.es_plit.activities.participant;
 
 import android.content.Intent;
 import android.os.Bundle;

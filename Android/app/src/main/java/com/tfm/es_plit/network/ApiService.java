@@ -35,4 +35,6 @@ public interface ApiService {
     Call<Object> updateParticipantAmount(@Path("paymentId") int paymentId, @Path("userId") int userId, @Body ParticipantUpdate body);
     @DELETE("payments/{paymentId}/participants/{userId}")
     Call<Object> removeParticipant(@Path("paymentId") int paymentId, @Path("userId") int userId);
+    @DELETE("payments/{id}")
+    Call<Object> destroyPaymentRoom(@Path("id") int paymentId);
 }

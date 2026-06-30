@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tfm.es_plit.R;
+import com.tfm.es_plit.activities.host.PreHostRoomActivity;
+import com.tfm.es_plit.activities.participant.PrePaymentJoinRoomActivity;
 import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.network.UserRepository;
@@ -19,6 +21,7 @@ public class UserAccountActivity extends AppCompatActivity {
     Button btnJoinPaymentRoom;
     TextView userNametext;
     TextView userFundsText;
+    TextView userCardText;
     private UserRepository userRepository;
     private int hostId;
 
@@ -31,6 +34,7 @@ public class UserAccountActivity extends AppCompatActivity {
         btnHostPaymentRoom = findViewById(R.id.btnHost);
         userNametext = findViewById(R.id.userUsername);
         userFundsText = findViewById(R.id.userFunds);
+        userCardText = findViewById(R.id.userCard);
 
         SessionManager session = new SessionManager(this);
         hostId = session.getUserId();
@@ -41,6 +45,7 @@ public class UserAccountActivity extends AppCompatActivity {
             public void onSuccess(User user) {
                 userNametext.setText(user.getName());
                 userFundsText.setText(String.format("%.2f €",user.getFunds()));
+                userCardText.setText(user.getCardNumber());
             }
 
             @Override

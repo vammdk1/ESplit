@@ -1,4 +1,4 @@
-package com.tfm.es_plit.activities;
+package com.tfm.es_plit.activities.host;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.tfm.es_plit.R;
+import com.tfm.es_plit.activities.UserAccountActivity;
 import com.tfm.es_plit.models.Participant;
 import com.tfm.es_plit.network.PaymentRepository;
 import com.tfm.es_plit.network.PaymentSocket;

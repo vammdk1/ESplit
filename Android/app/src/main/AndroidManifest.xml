@@ -20,12 +20,12 @@
         <activity android:name=".activities.UserAccountActivity"
             android:launchMode="singleTop"/>
 
-        <activity android:name=".activities.PreHostRoomActivity"/>
-        <activity android:name=".activities.PaymentHostRoomActivity"/>
-        <activity android:name=".activities.PaymentPostHostRoomActivity"/>
+        <activity android:name=".activities.host.PreHostRoomActivity"/>
+        <activity android:name=".activities.host.PaymentHostRoomActivity"/>
+        <activity android:name=".activities.host.PaymentPostHostRoomActivity"/>
 
-        <activity android:name=".activities.PrePaymentJoinRoomActivity"/>
-        <activity android:name=".activities.PaymentJoinRoomActivity"/>
+        <activity android:name=".activities.participant.PrePaymentJoinRoomActivity"/>
+        <activity android:name=".activities.participant.PaymentJoinRoomActivity"/>
 
         <activity
             android:name=".MainActivity"

@@ -1,4 +1,4 @@
-package com.tfm.es_plit.activities;
+package com.tfm.es_plit.activities.host;
 
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class PaymentHostRoomActivity extends AppCompatActivity {
@@ -177,6 +176,19 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
                             }
                             if (adapter != null) adapter.notifyDataSetChanged();
                         });
+                    } else if ("participant_left".equals(message.getString("type"))) {
+                        int userId = message.getInt("user_id");
+
+                        runOnUiThread(() -> {
+                            for (Participant p : plist) {
+                                if (p.getid() == userId) {
+                                    plist.remove(p);
+                                    calcularMontos();
+                                    break;
+                                }
+                            }
+                            if (adapter != null) adapter.notifyDataSetChanged();
+                        });
                     }
                 } catch (Exception e) {
                     Log.e("WS", "Error procesando mensaje: " + e.getMessage());
@@ -190,8 +202,6 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         });
 
         //OBJETO NFC
-        //TODO, añadir un semaforo ?
-
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         nfcReaderHelper = new NfcReaderHelper(new NfcReaderHelper.NfcReadCallback() {
             @Override
@@ -232,9 +242,13 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
                 Log.e("NFC", error);
             }
         });
+        //TODO eliminar sala de pago del backend si el host cancela el pago.
+        btCancel.setOnClickListener(view -> {
+            //paymentRepository.
+            finish();
+        });
 
-        btCancel.setOnClickListener(view -> finish());
-
+        // Botón para iniciar el pago, solo si todos los participantes han confirmado
         btStartpayment.setOnClickListener(v -> {
             if (paymentStatusCheck()) {
                 userRepository.getUserById(hostId, new UserRepository.UserCallback() {

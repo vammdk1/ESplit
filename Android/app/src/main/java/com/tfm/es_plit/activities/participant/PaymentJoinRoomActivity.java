@@ -1,4 +1,4 @@
-package com.tfm.es_plit.activities;
+package com.tfm.es_plit.activities.participant;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tfm.es_plit.R;
+import com.tfm.es_plit.activities.UserAccountActivity;
 import com.tfm.es_plit.adapters.JoinAdapter;
 import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.network.PaymentRepository;
@@ -16,6 +17,7 @@ import com.tfm.es_plit.network.UserRepository;
 import com.tfm.es_plit.network.PaymentSocket;
 import com.tfm.es_plit.models.Participant;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -84,9 +86,32 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         });
 
         btCancel.setOnClickListener(view -> {
+            onRemoveParticipant();
             Intent intent = new Intent(PaymentJoinRoomActivity.this, UserAccountActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+        });
+    }
+    //El participante decide salirse de la sala, eliminar del backend y actualizar a los demás participantes
+    private void onRemoveParticipant() {
+        paymentRepository.removeParticipant(paymentId, currentUserId, new PaymentRepository.RemoveParticipantCallback() {
+            @Override
+            public void onSuccess() {
+                try {
+                    JSONObject msg = new JSONObject();
+                    msg.put("type", "participant_left");
+                    msg.put("user_id", currentUserId);
+                    socket.send(msg);
+                } catch (JSONException e) {
+                    Log.e("API", "Error creando mensaje: " + e.getMessage());
+                }
+                Log.d("API", "Participante eliminado de la sala");
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("API", "Error eliminando participante: " + message);
+            }
         });
     }
 
