@@ -71,42 +71,36 @@ def reset_users(session: Session = Depends(get_session)):
 
     users = [
         User(
-            id=1,
             name="Victor Garcia",
             email="victor@esplit.com",
             funds=125.50,
             password="admin1234"
         ),
         User(
-            id=2,
             name="Laura Martinez",
             email="laura@esplit.com",
             funds=87.25,
             password="admin1234"
         ),
         User(
-            id=3,
             name="Carlos Fernandez",
             email="carlos@esplit.com",
             funds=210.00,
             password="admin1234"
         ),
         User(
-            id=4,
             name="Ana Lopez",
             email="ana@esplit.com",
             funds=54.75,
             password="admin1234"
         ),
         User(
-            id=123,
             name="123",
             email="123",
             funds=1000,
             password="123"
         ),
         User(
-            id=99,
             name="MR ADMIN",
             email="admin@mail.com",
             funds=500,

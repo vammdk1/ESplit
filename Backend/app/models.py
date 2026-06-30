@@ -1,6 +1,18 @@
-from typing import Optional, List
+from typing import Optional, List, Set
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
+import random
+
+
+_generated_card_numbers: Set[str] = set()
+
+
+def generate_fake_card_number() -> str:
+    while True:
+        number = "".join(str(random.randint(0, 9)) for _ in range(16))
+        if number not in _generated_card_numbers:
+            _generated_card_numbers.add(number)
+            return number
 
 
 class User(SQLModel, table=True):
@@ -9,6 +21,7 @@ class User(SQLModel, table=True):
     email: str
     funds: float = 0.0
     password: str
+    card_number: str = Field(default_factory=generate_fake_card_number)
 
 
 class Participant(SQLModel, table=True):
