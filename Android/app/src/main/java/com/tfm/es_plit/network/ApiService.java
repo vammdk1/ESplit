@@ -1,4 +1,5 @@
 package com.tfm.es_plit.network;
+import com.tfm.es_plit.models.Participant;
 import com.tfm.es_plit.models.User;
 
 import java.util.List;
@@ -37,4 +38,7 @@ public interface ApiService {
     Call<Object> removeParticipant(@Path("paymentId") int paymentId, @Path("userId") int userId);
     @DELETE("payments/{id}")
     Call<Object> destroyPaymentRoom(@Path("id") int paymentId);
+
+    @GET ("payments/{id}/participants")
+    Call<List<Participant>> getPaymentRoomParticipants(@Path("id") int paymentId);
 }

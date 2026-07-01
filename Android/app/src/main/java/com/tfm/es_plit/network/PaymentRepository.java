@@ -2,6 +2,7 @@ package com.tfm.es_plit.network;
 
 import com.tfm.es_plit.models.Participant;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -50,6 +51,28 @@ public class PaymentRepository {
         void onError(String message);
     }
 
+    public interface getPaymentRoomParticipantsCallback {
+        void onSuccess(List<Participant> detail);
+        void onError(String message);
+    }
+
+    public void getPaymentRoom(int paymentId, getPaymentRoomParticipantsCallback callback) {
+        apiService.getPaymentRoomParticipants(paymentId).enqueue(new Callback<List<Participant>>() {
+            @Override
+            public void onResponse(Call<List<Participant>> call, Response<List<Participant>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onError("Error al obtener la sala de pago");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Participant>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
     public void destroyPaymentRoom(int paymentId, DestroyPaymentRoomCallback callback) {
         apiService.destroyPaymentRoom(paymentId).enqueue(new Callback<Object>() {
             @Override

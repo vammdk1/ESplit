@@ -1,9 +1,12 @@
 package com.tfm.es_plit.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Participant implements Serializable {
     private final String name;
+    @SerializedName("user_id")
     private final int id;
     private double amount;
     private boolean confirmationStatus;

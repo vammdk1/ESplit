@@ -30,12 +30,15 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     private final List<Participant> participants;
     private final OnParticipantActionListener listener;
     private final int localUserId;
+    private final boolean isHost;
 
-    public ParticipantAdapter(List<Participant> participants, int localUserId, OnParticipantActionListener listener, PaymentSocket socket) {
+
+    public ParticipantAdapter(List<Participant> participants, int localUserId, boolean isHost, OnParticipantActionListener listener, PaymentSocket socket) {
         this.participants = participants; // referencia directa, sin copiar ni filtrar
         this.localUserId = localUserId;
         this.listener = listener;
         this.socket = socket;
+        this.isHost = isHost;
     }
 
     @Override
@@ -60,6 +63,14 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         List<Participant> filtered = new ArrayList<>();
         for (Participant p : participants) {
             if (p.getid() != localUserId) filtered.add(p);
+        }
+
+        if (isHost) {
+            holder.btConfirm.setVisibility(View.VISIBLE);
+            holder.btRemove.setVisibility(View.VISIBLE);
+        } else {
+            holder.btConfirm.setVisibility(View.GONE);
+            holder.btRemove.setVisibility(View.GONE);
         }
 
         Participant p = filtered.get(position);

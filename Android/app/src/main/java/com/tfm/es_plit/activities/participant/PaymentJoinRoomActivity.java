@@ -72,7 +72,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                     splitAmmount.setText(String.format("%.2f €", totalAmmount));
                     localHostAmmount.setText(String.format("%.2f €", totalAmmount));
 
-                    adapter = new ParticipantAdapter(plist,currentUserId , new ParticipantAdapter.OnParticipantActionListener() {
+                    adapter = new ParticipantAdapter(plist,currentUserId, false , new ParticipantAdapter.OnParticipantActionListener() {
                         @Override
                         public void onRemove(Participant participant) {
                             // No se permite eliminar a otros participantes desde la vista del participante
@@ -83,6 +83,20 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                         }
                     }, socket);
                     recyclerView.setAdapter(adapter);
+
+                    paymentRepository.getPaymentRoom(paymentId, new PaymentRepository.getPaymentRoomParticipantsCallback() {
+                        @Override
+                        public void onSuccess(List<Participant> participants) {
+                            plist.clear();
+                            plist.addAll(participants);
+                            runOnUiThread(() -> adapter.notifyDataSetChanged());
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            Log.e("API", "Error consultando participantes: " + message);
+                        }
+                    });
 
                     connectSocket();
                 });

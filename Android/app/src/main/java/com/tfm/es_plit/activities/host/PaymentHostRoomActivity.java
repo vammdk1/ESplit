@@ -146,7 +146,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Adaptador para actuializar vistas despuésde iniciar NFC
-        adapter = new ParticipantAdapter(plist, hostId, new ParticipantAdapter.OnParticipantActionListener() {
+        adapter = new ParticipantAdapter(plist, hostId, true, new ParticipantAdapter.OnParticipantActionListener() {
             @Override
             public void onRemove(Participant participant) {
                 // Proceso para borrar del backend a un usuario de la sala de pago
