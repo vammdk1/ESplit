@@ -30,6 +30,28 @@ class ParticipantUpdate(SQLModel):
     user_id: int
     amount: float
 
+class ParticipantOut(SQLModel):
+    user_id: int
+    name: str
+    amount: float
+    confirmation_status: bool
+
+@router.get("/{payment_id}/participants", response_model=list[ParticipantOut])
+def get_participants(payment_id: int, session: Session = Depends(get_session)):
+    participants = session.exec(
+        select(Participant).where(Participant.payment_id == payment_id)
+    ).all()
+    return [
+        ParticipantOut(
+            user_id=p.user_id,
+            name=p.name,
+            amount=p.amount,
+            confirmation_status=p.confirmation_status
+        )
+        for p in participants
+    ]
+
+
 @router.put("/{payment_id}/participants/{user_id}")
 def update_participant_amount(payment_id: int, user_id: int, data: ParticipantUpdate, session: Session = Depends(get_session)):
     participant = session.exec(
@@ -107,7 +129,7 @@ def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_se
 
     return PayResponse(success=True, payment_status=payment.payment_status)
 
-#Breadcast de cierre de pago
+#Broadcast de cierre de pago
 @router.post("/{payment_id}/pay", response_model=PayResponse)
 async def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_session)):
     payment = session.get(Payment, payment_id)
