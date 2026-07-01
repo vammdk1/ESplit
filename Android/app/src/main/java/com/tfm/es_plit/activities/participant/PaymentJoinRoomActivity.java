@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.activities.UserAccountActivity;
-import com.tfm.es_plit.adapters.JoinAdapter;
+import com.tfm.es_plit.adapters.ParticipantAdapter;
 import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.network.PaymentRepository;
 import com.tfm.es_plit.network.UserRepository;
@@ -27,9 +27,9 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
     private Button btCancel;
     private List<Participant> plist = new ArrayList<>();
     private double totalAmmount;
-    private TextView hostAmmount;
+    private TextView localHostAmmount;
     private TextView splitAmmount;
-    private JoinAdapter adapter;
+    private ParticipantAdapter adapter;
     private UserRepository userRepository;
     private PaymentRepository paymentRepository;
 
@@ -45,7 +45,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
 
         currentUserId = new SessionManager(this).getUserId();
 
-        hostAmmount = findViewById(R.id.textUnmanagedAmmount);
+        localHostAmmount = findViewById(R.id.textUnmanagedAmmount);
         splitAmmount = findViewById(R.id.totalSplitAmmount);
 
         paymentRepository = new PaymentRepository();
@@ -70,9 +70,18 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     Log.d("API", "Hay invitación pendiente para: "+currentUserId);
                     splitAmmount.setText(String.format("%.2f €", totalAmmount));
-                    hostAmmount.setText(String.format("%.2f €", totalAmmount));
+                    localHostAmmount.setText(String.format("%.2f €", totalAmmount));
 
-                    adapter = new JoinAdapter(plist, socket);
+                    adapter = new ParticipantAdapter(plist,currentUserId , new ParticipantAdapter.OnParticipantActionListener() {
+                        @Override
+                        public void onRemove(Participant participant) {
+                            // No se permite eliminar a otros participantes desde la vista del participante
+                        }
+                        @Override
+                        public void onConfirm(Participant participant) {
+                            // No se permite confirmar a otros participantes desde la vista del participante
+                        }
+                    }, socket);
                     recyclerView.setAdapter(adapter);
 
                     connectSocket();
@@ -135,7 +144,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                         double newAmount = message.getDouble("amount");
                         runOnUiThread(() -> {
                             totalAmmount = newAmount;
-                            hostAmmount.setText(String.format("%.2f €", newAmount));
+                            localHostAmmount.setText(String.format("%.2f €", newAmount));
                         });
 
                     } else if ("payment_completed".equals(type)) {

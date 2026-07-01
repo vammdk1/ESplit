@@ -15,6 +15,7 @@ import com.tfm.es_plit.models.Participant;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.ViewHolder> {
@@ -28,11 +29,22 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
     private final List<Participant> participants;
     private final OnParticipantActionListener listener;
+    private final int localUserId;
 
-    public ParticipantAdapter(List<Participant> participants, OnParticipantActionListener listener, PaymentSocket socket) {
-        this.participants = participants;
+    public ParticipantAdapter(List<Participant> participants, int localUserId, OnParticipantActionListener listener, PaymentSocket socket) {
+        this.participants = participants; // referencia directa, sin copiar ni filtrar
+        this.localUserId = localUserId;
         this.listener = listener;
         this.socket = socket;
+    }
+
+    @Override
+    public int getItemCount() {
+        int count = 0;
+        for (Participant p : participants) {
+            if (p.getid() != localUserId) count++;
+        }
+        return count;
     }
 
     @Override
@@ -44,7 +56,13 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Participant p = participants.get(position);
+        // construye una lista filtrada solo para bindear
+        List<Participant> filtered = new ArrayList<>();
+        for (Participant p : participants) {
+            if (p.getid() != localUserId) filtered.add(p);
+        }
+
+        Participant p = filtered.get(position);
         holder.tvName.setText(p.getName());
         holder.tvAmount.setText(String.format("€%.2f", p.getAmount()));
 
@@ -77,10 +95,6 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return participants.size();
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvAmount;

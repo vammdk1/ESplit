@@ -45,7 +45,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
     private void calcularMontos() {
         int numParticipants = plist.size();
-        amounPerPerson = totalAmount / (numParticipants + 1);
+        amounPerPerson = totalAmount / numParticipants ;
 
         for (Participant p : plist) {
             p.setAmount(amounPerPerson);
@@ -83,6 +83,9 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
     private boolean paymentStatusCheck() {
         for (Participant p : plist) {
+            if (p.getid() == hostId) {
+                continue; // El host no necesita confirmar
+            }
             if (!p.getConfirmationStatus()) {
                 return false;
             }
@@ -110,57 +113,83 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         paymentRepository = new PaymentRepository();
         socket = new PaymentSocket();
 
+        //Añadir al host a la sala de pago en el backend para que lo puedan ver los participantes
+        userRepository.getUserById(hostId, new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User hUser) {
+                Participant hostParticipant = new Participant(hUser.getId(), hUser.getName());
+                hostParticipant.setAmount(hostAmmount);
+                plist.add(hostParticipant);
+
+                paymentRepository.addParticipant(paymentId, hostParticipant, new PaymentRepository.AddParticipantCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d("API", "Host añadido a la sala");
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("API", "Error añadiendo host: " + message);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("API", "Error cargando host: " + message);
+            }
+        });
+
+
         //vista de participantes
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //Adaptador para actuializar vistas despuésde inicar NFC
-        adapter = new ParticipantAdapter(plist, new ParticipantAdapter.OnParticipantActionListener() {
+        //Adaptador para actuializar vistas despuésde iniciar NFC
+        adapter = new ParticipantAdapter(plist, hostId, new ParticipantAdapter.OnParticipantActionListener() {
+            @Override
+            public void onRemove(Participant participant) {
+                // Proceso para borrar del backend a un usuario de la sala de pago
+                paymentRepository.removeParticipant(paymentId, participant.getid(),
+                        new PaymentRepository.RemoveParticipantCallback() {
+                            @Override
+                            public void onSuccess() {
+                                // notifica al participante que ha sido eliminado, web socket
+                                try {
+                                    JSONObject msg = new JSONObject();
+                                    msg.put("type", "participant_removed");
+                                    msg.put("user_id", participant.getid());
+                                    socket.send(msg);
+                                } catch (Exception e) {
+                                    Log.e("WS", "Error notificando eliminación: " + e.getMessage());
+                                }
 
-        @Override
-        public void onRemove(Participant participant) {
-            // Proceso para borrar del backend a un usuario de la sala de pago
-            paymentRepository.removeParticipant(paymentId, participant.getid(),
-                    new PaymentRepository.RemoveParticipantCallback() {
-                        @Override
-                        public void onSuccess() {
-                            // notifica al participante que ha sido eliminado, web socket
-                            try {
-                                JSONObject msg = new JSONObject();
-                                msg.put("type", "participant_removed");
-                                msg.put("user_id", participant.getid());
-                                socket.send(msg);
-                            } catch (Exception e) {
-                                Log.e("WS", "Error notificando eliminación: " + e.getMessage());
+                                // Acttualizar interfaz gráfica
+                                runOnUiThread(() -> {
+                                    calcularMontos();
+                                    adapter.notifyDataSetChanged();
+                                });
                             }
 
-                            // Acttualizar interfaz gráfica
-                            runOnUiThread(() -> {
-                                calcularMontos();
-                                adapter.notifyDataSetChanged();
-                            });
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            Log.e("API", "Error eliminando participante: " + message);
-                        }
-                    });
-            }
-
+                            @Override
+                            public void onError(String message) {
+                                Log.e("API", "Error eliminando participante: " + message);
+                            }
+                        });
+                }
             @Override
             public void onConfirm(Participant participant) {
             }
         }, socket);
+
         recyclerView.setAdapter(adapter);
 
-            // Abre el WebSocket de la sala ya creada
+        // Abre el WebSocket de la sala ya creada
         socket.connect(paymentId, new PaymentSocket.SocketListener() {
             @Override
             public void onConnected() {
                 Log.d("WS", "Host conectado a la sala " + paymentId);
             }
-
             @Override
             public void onMessage(JSONObject message) {
                 try {
@@ -251,37 +280,13 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         // Botón para iniciar el pago, solo si todos los participantes han confirmado
         btStartpayment.setOnClickListener(v -> {
             if (paymentStatusCheck()) {
-                userRepository.getUserById(hostId, new UserRepository.UserCallback() {
-                    @Override
-                    public void onSuccess(User hUser) {
-                        Participant hostParticipant = new Participant(hUser.getId(), hUser.getName());
-                        hostParticipant.setAmount(hostAmmount);
-                        plist.add(hostParticipant);
-
-                        paymentRepository.addParticipant(paymentId, hostParticipant, new PaymentRepository.AddParticipantCallback() {
-                            @Override
-                            public void onSuccess() {
-                                Log.d("API", "Host añadido a la sala");
-
-                                Intent intent = new Intent(PaymentHostRoomActivity.this, PaymentPostHostRoomActivity.class);
-                                intent.putExtra("pList", (Serializable) plist);
-                                intent.putExtra("TOTAL_AMOUNT", totalAmount);
-                                intent.putExtra("PAYMENT_ID", paymentId);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void onError(String message) {
-                                Log.e("API", "Error añadiendo host: " + message);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        Log.e("API", "Error cargando host: " + message);
-                    }
-                });
+                Intent intent = new Intent(PaymentHostRoomActivity.this, PaymentPostHostRoomActivity.class);
+                intent.putExtra("pList", (Serializable) plist);
+                intent.putExtra("TOTAL_AMOUNT", totalAmount);
+                intent.putExtra("PAYMENT_ID", paymentId);
+                startActivity(intent);
+            } else {
+                Log.d("API", "No todos los participantes han confirmado el pago.");
             }
         });
     }
@@ -300,7 +305,6 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
                     null);
         }
     }
-
     @Override
     protected void onPause() {
         super.onPause();
