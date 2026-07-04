@@ -21,7 +21,6 @@
             android:layout_height="250dp"
             android:src="@drawable/logo"
             android:layout_marginBottom="12dp"
-            android:layout_marginLeft="20dp"
             android:contentDescription="Logo" />
 
         <TextView
@@ -39,7 +38,8 @@
             android:textSize="15sp"
             android:letterSpacing="0.1"
             android:textColor="@color/white"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="4dp"
+            android:textAlignment="center"/>
     </LinearLayout>
 
     <LinearLayout

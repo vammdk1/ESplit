@@ -86,11 +86,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
         holder.btRemove.setOnClickListener(v -> {
             int pos = holder.getAbsoluteAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                participants.remove(pos);
-                notifyItemRemoved(pos);
-                listener.onRemove(p);
-            }
+            listener.onRemove(p);
         });
 
         holder.btConfirm.setOnClickListener(v -> {

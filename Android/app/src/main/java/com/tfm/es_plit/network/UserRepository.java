@@ -26,7 +26,7 @@ public class UserRepository {
         void onError(String message);
     }
     public interface PendingPaymentCallback {
-        void onSuccess(boolean hasInvitation, int paymentId, double amount);
+        void onSuccess(boolean hasInvitation, int paymentId, double amount, double fullAmount);
         void onError(String message);
     }
 
@@ -40,9 +40,10 @@ public class UserRepository {
                     if (hasInvitation) {
                         int paymentId = ((Double) body.get("payment_id")).intValue();
                         double amount = (Double) body.get("amount");
-                        callback.onSuccess(true, paymentId, amount);
+                        double fullAmount = (Double) body.get("room_amount");
+                        callback.onSuccess(true, paymentId, amount, fullAmount);
                     } else {
-                        callback.onSuccess(false, 0, 0.0);
+                        callback.onSuccess(false, 0, 0.0, 0.0);
                     }
                 } else {
                     callback.onError("Error consultando invitación");

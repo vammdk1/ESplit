@@ -31,16 +31,18 @@ public class PrePaymentJoinRoomActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(v -> finish());
     }
 
+    // Método para buscar sala con reintentos y los datos de la sala
     private void buscarSalaConReintentos() {
         pollingRunnable = () -> {
             userRepository.getPendingPayment(currentUserId, new UserRepository.PendingPaymentCallback() {
                 @Override
-                public void onSuccess(boolean hasInvitation, int paymentId, double amount) {
+                public void onSuccess(boolean hasInvitation, int paymentId, double amount, double fullAmount) {
                     if (hasInvitation) {
                         // encontró sala, navega automáticamente
                         Intent intent = new Intent(PrePaymentJoinRoomActivity.this, PaymentJoinRoomActivity.class);
                         intent.putExtra("PAYMENT_ID", paymentId);
-                        intent.putExtra("TOTAL_AMOUNT", amount);
+                        intent.putExtra("PARTICIPANT_AMOUNT", amount);
+                        intent.putExtra("FULL_AMOUNT", fullAmount);
                         intent.putExtra("ACTUAL_USER",currentUserId);
                         startActivity(intent);
                     } else {

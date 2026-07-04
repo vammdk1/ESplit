@@ -25,8 +25,6 @@ public class UserAccountActivity extends AppCompatActivity {
     private UserRepository userRepository;
     private int hostId;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

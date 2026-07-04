@@ -27,6 +27,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
     private Button btCancel;
     private List<Participant> plist = new ArrayList<>();
     private double totalAmmount;
+    private double participantAmmount;
     private TextView localHostAmmount;
     private TextView splitAmmount;
     private ParticipantAdapter adapter;
@@ -55,58 +56,40 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipantsJoin);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // pregunta si hay invitación
-        userRepository.getPendingPayment(currentUserId, new UserRepository.PendingPaymentCallback() {
+        paymentId = getIntent().getIntExtra("PAYMENT_ID", 0);
+        totalAmmount = getIntent().getDoubleExtra("FULL_AMOUNT", 0.0);
+        participantAmmount = getIntent().getDoubleExtra("PARTICIPANT_AMOUNT", 0.0);
+
+        splitAmmount.setText(String.format("%.2f €", totalAmmount));
+        localHostAmmount.setText(String.format("%.2f €", participantAmmount));
+
+        adapter = new ParticipantAdapter(plist,currentUserId, false , new ParticipantAdapter.OnParticipantActionListener() {
             @Override
-            public void onSuccess(boolean hasInvitation, int receivedPaymentId, double amount) {
-                if (!hasInvitation) {
-                    Log.d("API", "No hay invitación pendiente para: "+currentUserId);
-                    return;
-                }
+            public void onRemove(Participant participant) {
+                // No se permite eliminar a otros participantes desde la vista del participante
+            }
+            @Override
+            public void onConfirm(Participant participant) {
+                // No se permite confirmar a otros participantes desde la vista del participante
+            }
+        }, socket);
+        recyclerView.setAdapter(adapter);
 
-                paymentId = receivedPaymentId;
-                totalAmmount = amount;
-
-                runOnUiThread(() -> {
-                    Log.d("API", "Hay invitación pendiente para: "+currentUserId);
-                    splitAmmount.setText(String.format("%.2f €", totalAmmount));
-                    localHostAmmount.setText(String.format("%.2f €", totalAmmount));
-
-                    adapter = new ParticipantAdapter(plist,currentUserId, false , new ParticipantAdapter.OnParticipantActionListener() {
-                        @Override
-                        public void onRemove(Participant participant) {
-                            // No se permite eliminar a otros participantes desde la vista del participante
-                        }
-                        @Override
-                        public void onConfirm(Participant participant) {
-                            // No se permite confirmar a otros participantes desde la vista del participante
-                        }
-                    }, socket);
-                    recyclerView.setAdapter(adapter);
-
-                    paymentRepository.getPaymentRoom(paymentId, new PaymentRepository.getPaymentRoomParticipantsCallback() {
-                        @Override
-                        public void onSuccess(List<Participant> participants) {
-                            plist.clear();
-                            plist.addAll(participants);
-                            runOnUiThread(() -> adapter.notifyDataSetChanged());
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            Log.e("API", "Error consultando participantes: " + message);
-                        }
-                    });
-
-                    connectSocket();
-                });
+        paymentRepository.getPaymentRoom(paymentId, new PaymentRepository.getPaymentRoomParticipantsCallback() {
+            @Override
+            public void onSuccess(List<Participant> participants) {
+                plist.clear();
+                plist.addAll(participants);
+                runOnUiThread(() -> adapter.notifyDataSetChanged());
             }
 
             @Override
             public void onError(String message) {
-                Log.e("API", "Error consultando invitación: " + message);
+                Log.e("API", "Error consultando participantes: " + message);
             }
         });
+        connectSocket();
+
 
         btCancel.setOnClickListener(view -> {
             onRemoveParticipant();

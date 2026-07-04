@@ -43,44 +43,6 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     private NfcAdapter nfcAdapter;
     private NfcReaderHelper nfcReaderHelper;
 
-    private void calcularMontos() {
-        int numParticipants = plist.size();
-        amounPerPerson = totalAmount / numParticipants ;
-
-        for (Participant p : plist) {
-            p.setAmount(amounPerPerson);
-            p.setConfirmationStatus(false);
-
-            // Actualiza en el backend
-            paymentRepository.updateParticipantAmount(paymentId, p.getid(), amounPerPerson,
-                    new PaymentRepository.UpdateParticipantCallback() {
-                        @Override
-                        public void onSuccess() {
-                            Log.d("API", "Monto actualizado para " + p.getid());
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            Log.e("API", "Error actualizando monto: " + message);
-                        }
-                    });
-
-            // Notifica al participante en vivo por WebSocket
-            try {
-                JSONObject update = new JSONObject();
-                update.put("type", "amount_updated");
-                update.put("user_id", p.getid());
-                update.put("amount", amounPerPerson);
-                socket.send(update);
-            } catch (Exception e) {
-                Log.e("WS", "Error notificando cambio de monto: " + e.getMessage());
-            }
-        }
-
-        hostAmmount = amounPerPerson;
-        hostStringAmmount.setText(String.format("%.2f €", amounPerPerson));
-    }
-
     private boolean paymentStatusCheck() {
         for (Participant p : plist) {
             if (p.getid() == hostId) {
@@ -113,35 +75,15 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         paymentRepository = new PaymentRepository();
         socket = new PaymentSocket();
 
-        //Añadir al host a la sala de pago en el backend para que lo puedan ver los participantes
-        userRepository.getUserById(hostId, new UserRepository.UserCallback() {
-            @Override
-            public void onSuccess(User hUser) {
-                Participant hostParticipant = new Participant(hUser.getId(), hUser.getName());
-                hostParticipant.setAmount(hostAmmount);
-                plist.add(hostParticipant);
-
-                paymentRepository.addParticipant(paymentId, hostParticipant, new PaymentRepository.AddParticipantCallback() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d("API", "Host añadido a la sala");
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        Log.e("API", "Error añadiendo host: " + message);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(String message) {
-                Log.e("API", "Error cargando host: " + message);
-            }
-        });
-
-
-        //vista de participantes
+        //Añadir al host a la lista de la sala de pago local
+        Participant hostParticipant = (Participant) getIntent().getSerializableExtra("HOST_PARTICIPANT");
+        if (hostParticipant != null) {
+            plist.add(hostParticipant);
+            hostAmmount = hostParticipant.getAmount();
+        } else {
+            Log.e("API", "No se recibió el participante host, algo falló en la creación de la sala");
+        }
+        //vista de participantes dentro de la sala host
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -166,6 +108,13 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
                                 // Acttualizar interfaz gráfica
                                 runOnUiThread(() -> {
+                                    for (Participant p : plist) {
+                                        if (p.getid() == participant.getid()) {
+                                            plist.remove(p);
+                                            calcularMontos();
+                                            break;
+                                        }
+                                    }
                                     calcularMontos();
                                     adapter.notifyDataSetChanged();
                                 });
@@ -295,6 +244,45 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         socket.close();
+    }
+
+    private void calcularMontos() {
+        int numParticipants = plist.size();
+        Log.d("API", "Número de participantes: " + numParticipants);
+        amounPerPerson = totalAmount / numParticipants ;
+
+        for (Participant p : plist) {
+            p.setAmount(amounPerPerson);
+            p.setConfirmationStatus(false);
+
+            // Actualiza en el backend
+            paymentRepository.updateParticipantAmount(paymentId, p.getid(), amounPerPerson,
+                    new PaymentRepository.UpdateParticipantCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d("API", "Monto actualizado para " + p.getid());
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            Log.e("API", "Error actualizando monto: " + message);
+                        }
+                    });
+
+            // Notifica al participante en vivo por WebSocket
+            try {
+                JSONObject update = new JSONObject();
+                update.put("type", "amount_updated");
+                update.put("user_id", p.getid());
+                update.put("amount", amounPerPerson);
+                socket.send(update);
+            } catch (Exception e) {
+                Log.e("WS", "Error notificando cambio de monto: " + e.getMessage());
+            }
+        }
+
+        hostAmmount = amounPerPerson;
+        hostStringAmmount.setText(String.format("%.2f €", amounPerPerson));
     }
     @Override
     protected void onResume() {
