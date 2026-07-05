@@ -26,14 +26,24 @@ public class UserIdHceService extends HostApduService {
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
         if (commandApdu == null) return UNKNOWN_CMD;
 
+        // solo responde si está activo
+        boolean isActive = getSharedPreferences("nfc_prefs", MODE_PRIVATE)
+                .getBoolean("hce_active", false);
+        if (!isActive) return UNKNOWN_CMD;
+
         if (isSelectAid(commandApdu)) {
-            // El host seleccionó nuestra app NFC — respondemos con el user_id
             SessionManager session = new SessionManager(this);
             int userId = session.getUserId();
-            String response = String.valueOf(userId);
-            Log.d(TAG, "HCE: enviando user_id " + userId);
 
-            byte[] responseBytes = response.getBytes();
+            // obtener el card_number del usuario desde SharedPreferences
+            String cardNumber = getSharedPreferences("user_prefs", MODE_PRIVATE)
+                    .getString("card_number", "");
+
+            if (cardNumber.isEmpty()) return UNKNOWN_CMD;
+
+            Log.d(TAG, "HCE: enviando card_number " + cardNumber);
+
+            byte[] responseBytes = cardNumber.getBytes();
             byte[] result = new byte[responseBytes.length + 2];
             System.arraycopy(responseBytes, 0, result, 0, responseBytes.length);
             result[responseBytes.length] = (byte) 0x90;

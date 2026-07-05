@@ -85,7 +85,6 @@ public class PaymentPostHostRoomActivity extends AppCompatActivity {
                 }
             });
         });
-
         btCancel.setOnClickListener(view -> finish());
     }
 }

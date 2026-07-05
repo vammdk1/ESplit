@@ -66,4 +66,18 @@ public class PrePaymentJoinRoomActivity extends AppCompatActivity {
         super.onDestroy();
         pollingHandler.removeCallbacks(pollingRunnable);
     }
+    // Activa o desactiva el servicio HCE según el estado de la actividad
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSharedPreferences("nfc_prefs", MODE_PRIVATE)
+                .edit().putBoolean("hce_active", true).apply();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getSharedPreferences("nfc_prefs", MODE_PRIVATE)
+                .edit().putBoolean("hce_active", false).apply();
+    }
 }

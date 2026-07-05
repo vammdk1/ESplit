@@ -81,12 +81,15 @@
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentHostRoomActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/participant/PaymentJoinRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/participant/PaymentJoinRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentPostHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentPostHostRoomActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/participant/PrePaymentJoinRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/participant/PrePaymentJoinRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/nfc/NfcReaderHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/nfc/NfcReaderHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/nfc/UserIdHceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/nfc/UserIdHceService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

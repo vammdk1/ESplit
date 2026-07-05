@@ -140,16 +140,15 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         nfcReaderHelper = new NfcReaderHelper(new NfcReaderHelper.NfcReadCallback() {
             @Override
-            public void onUserIdRead(int userId) {
-                userRepository.getUserById(userId, new UserRepository.UserCallback() {
+            public void onCardRead(String cardNumber) {
+                userRepository.getUserByCard(cardNumber, new UserRepository.CardCallback() {
                     @Override
-                    public void onSuccess(User user) {
+                    public void onSuccess(int userId, String name) {
                         for (Participant p : plist) {
-                            if (p.getid() == user.getId()) return;
+                            if (p.getid() == userId) return;
                         }
-                        Participant participant = new Participant(user.getId(), user.getName());
+                        Participant participant = new Participant(userId, name);
                         plist.add(participant);
-
                         paymentRepository.addParticipant(paymentId, participant, new PaymentRepository.AddParticipantCallback() {
                             @Override
                             public void onSuccess() {
@@ -166,15 +165,13 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onError(String message) {
-                        Log.e("NFC", "Error cargando usuario: " + message);
+                        Log.e("NFC", "Tarjeta no encontrada: " + message);
                     }
                 });
             }
-
             @Override
             public void onError(String message) {
-                String error = "Error con NFC, revisar paymenthost";
-                Log.e("NFC", error);
+                Log.e("NFC", message);
             }
         });
         btCancel.setOnClickListener(view -> {

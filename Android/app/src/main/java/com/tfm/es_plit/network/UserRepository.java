@@ -29,7 +29,10 @@ public class UserRepository {
         void onSuccess(boolean hasInvitation, int paymentId, double amount, double fullAmount);
         void onError(String message);
     }
-
+    public interface CardCallback {
+        void onSuccess(int userId, String name);
+        void onError(String message);
+    }
     public void getPendingPayment(int userId, PendingPaymentCallback callback) {
         apiService.getPendingPayment(userId).enqueue(new Callback<Map<String, Object>>() {
             @Override
@@ -56,7 +59,6 @@ public class UserRepository {
             }
         });
     }
-
     public void getUserById(int id, UserCallback callback) {
         apiService.getUserById(id).enqueue(new Callback<User>() {
             @Override
@@ -91,7 +93,6 @@ public class UserRepository {
             }
         });
     }
-
     public void getUsers(UsersListCallback callback) {
         apiService.getUsers().enqueue(new Callback<List<User>>() {
             @Override
@@ -105,6 +106,25 @@ public class UserRepository {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+    public void getUserByCard(String cardNumber, CardCallback callback) {
+        apiService.getUserByCard(cardNumber).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    int userId = ((Double) response.body().get("user_id")).intValue();
+                    String name = (String) response.body().get("name");
+                    callback.onSuccess(userId, name);
+                } else {
+                    callback.onError("Tarjeta no encontrada");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
                 callback.onError(t.getMessage());
             }
         });

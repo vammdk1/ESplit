@@ -18,7 +18,7 @@ public class NfcReaderHelper implements NfcAdapter.ReaderCallback {
     };
 
     public interface NfcReadCallback {
-        void onUserIdRead(int userId);
+        void onCardRead(String cardNumber);
         void onError(String message);
     }
 
@@ -41,13 +41,11 @@ public class NfcReaderHelper implements NfcAdapter.ReaderCallback {
             byte[] response = isoDep.transceive(SELECT_AID_COMMAND);
 
             if (response != null && response.length > 2) {
-                // quita los 2 bytes de status (0x90 0x00) al final
                 byte[] data = new byte[response.length - 2];
                 System.arraycopy(response, 0, data, 0, data.length);
-                String userIdStr = new String(data).trim();
-                int userId = Integer.parseInt(userIdStr);
-                Log.d(TAG, "Usuario leído por NFC: " + userId);
-                callback.onUserIdRead(userId);
+                String cardNumber = new String(data).trim();
+                Log.d(TAG, "Tarjeta leída por NFC: " + cardNumber);
+                callback.onCardRead(cardNumber);
             } else {
                 callback.onError("Respuesta NFC vacía o inválida");
             }

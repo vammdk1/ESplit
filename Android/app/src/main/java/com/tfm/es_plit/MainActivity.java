@@ -37,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
                         SessionManager session = new SessionManager(MainActivity.this);
                         session.saveUserId(user.getId());
 
+                        // guarda el card_number para el HCE
+                        getSharedPreferences("user_prefs", MODE_PRIVATE)
+                                .edit()
+                                .putString("card_number", user.getCardNumber())
+                                .apply();
+
                         Intent intent = new Intent(MainActivity.this, UserAccountActivity.class);
                         startActivity(intent);
                     }
