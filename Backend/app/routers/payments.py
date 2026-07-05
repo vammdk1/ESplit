@@ -205,3 +205,59 @@ def remove_participant(payment_id: int, user_id: int, session: Session = Depends
     session.commit()
 
     return {"success": True}
+
+@router.post("/tpv/charge")
+async def tpv_charge(card_number: str, amount: float, session: Session = Depends(get_session)):
+    # 1. Busca el usuario por card_number
+    user = session.exec(select(User).where(User.card_number == card_number)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Card not found")
+
+    # 2. Busca el Payment activo del host con todos los participantes confirmados
+    payment = session.exec(
+        select(Payment).where(
+            Payment.payment_status == False
+        )
+    ).all()
+
+    # filtra el payment donde el host (user_id) es participante
+    active_payment = None
+    for p in payment:
+        for participant in p.participants:
+            if participant.user_id == user.id:
+                active_payment = p
+                break
+        if active_payment:
+            break
+
+    if not active_payment:
+        raise HTTPException(status_code=404, detail="No active payment found for this card")
+
+    # 3. Verifica que el monto coincide
+    if active_payment.total_amount != amount:
+        return {"success": False, "reason": "Amount mismatch"}
+
+    # 4. Verifica que todos los participantes han confirmado
+    for participant in active_payment.participants:
+        if participant.user_id == user.id:
+            continue  # el host no necesita confirmarse a sí mismo
+        if not participant.confirmation_status:
+            return {"success": False, "reason": "Not all participants confirmed"}
+
+    # 5. Procesa el pago
+    for participant in active_payment.participants:
+        u = session.get(User, participant.user_id)
+        if u:
+            if u.funds < participant.amount:
+                return {"success": False, "reason": f"Insufficient funds for {u.name}"}
+            u.funds -= participant.amount
+            session.add(u)
+
+    active_payment.payment_status = True
+    session.add(active_payment)
+    session.commit()
+
+    # 6. Notifica a todos por WebSocket
+    await manager.broadcast(active_payment.id, {"type": "payment_completed"})
+
+    return {"success": True, "payment_id": active_payment.id}

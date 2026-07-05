@@ -58,7 +58,8 @@ def get_pending_payment(user_id: int, session: Session = Depends(get_session)):
     return {
         "has_invitation": True,
         "payment_id": participant.payment_id,
-        "amount": participant.amount
+        "amount": participant.amount,
+        "room_amount": participant.payment.total_amount
     }
 
 # endpoint de desarrollo para el restablecimientod e usuarios post pruebas
@@ -98,7 +99,7 @@ def reset_users(session: Session = Depends(get_session)):
             name="123",
             email="123",
             funds=1000,
-            password="123"
+            password="admin1234"
         ),
         User(
             name="MR ADMIN",
@@ -115,3 +116,10 @@ def reset_users(session: Session = Depends(get_session)):
         "success": True,
         "message": "Test users restored"
     }
+
+@router.get("/by-card/{card_number}")
+def get_user_by_card(card_number: str, session: Session = Depends(get_session)):
+    user = session.exec(select(User).where(User.card_number == card_number)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Card not found")
+    return {"user_id": user.id, "name": user.name}
