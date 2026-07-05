@@ -12,6 +12,7 @@ import com.tfm.es_plit.R;
 import com.tfm.es_plit.activities.UserAccountActivity;
 import com.tfm.es_plit.adapters.ParticipantAdapter;
 import com.tfm.es_plit.data.SessionManager;
+import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.network.PaymentRepository;
 import com.tfm.es_plit.network.UserRepository;
 import com.tfm.es_plit.network.PaymentSocket;
@@ -154,9 +155,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                     } else if ("participant_removed".equals(type) // eliminar usuario del pago
                             && message.getInt("user_id") == currentUserId) {
                         runOnUiThread(() -> {
-                            Intent intent = new Intent(PaymentJoinRoomActivity.this, UserAccountActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
+                            showExpulsionDialog();
                         });
                     }
 
@@ -173,11 +172,43 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
     }
 
     private void showConfirmDialog(double amount) {
+        userRepository.getUserById(currentUserId, new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User user) {
+                if (user.getFunds() < amount) {
+                    new androidx.appcompat.app.AlertDialog.Builder(PaymentJoinRoomActivity.this)
+                            .setTitle("Fondos insuficientes")
+                            .setMessage("No tienes suficiente saldo para participar en el pago.")
+                            .setPositiveButton("Aceptar", (dialog, which) -> sendResponse(false))
+                            .setCancelable(false)
+                            .show();
+
+                } else
+                    new androidx.appcompat.app.AlertDialog.Builder(PaymentJoinRoomActivity.this)
+                            .setTitle("Confirmar pago")
+                            .setMessage("El host solicita tu confirmación para pagar " + String.format("%.2f €", amount))
+                            .setPositiveButton("Aceptar", (dialog, which) -> sendResponse(true))
+                            .setNegativeButton("Rechazar", (dialog, which) -> sendResponse(false))
+                            .setCancelable(false)
+                            .show();
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("API", "Error obteniendo datos del usuario: " + message);
+            }
+        });
+    }
+
+    private void showExpulsionDialog() {
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Confirmar pago")
-                .setMessage("El host solicita tu confirmación para pagar " + String.format("%.2f €", amount))
-                .setPositiveButton("Aceptar", (dialog, which) -> sendResponse(true))
-                .setNegativeButton("Rechazar", (dialog, which) -> sendResponse(false))
+                .setTitle("Expulsado de la sala")
+                .setMessage("Has sido expulsado de la sala de pago por el host.")
+                .setPositiveButton("Aceptar", (dialog, which) -> {
+                    Intent intent = new Intent(PaymentJoinRoomActivity.this, UserAccountActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                })
                 .setCancelable(false)
                 .show();
     }

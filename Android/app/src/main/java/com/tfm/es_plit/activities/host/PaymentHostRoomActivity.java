@@ -43,18 +43,6 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
     private NfcAdapter nfcAdapter;
     private NfcReaderHelper nfcReaderHelper;
 
-    private boolean paymentStatusCheck() {
-        for (Participant p : plist) {
-            if (p.getid() == hostId) {
-                continue; // El host no necesita confirmar
-            }
-            if (!p.getConfirmationStatus()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +71,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         } else {
             Log.e("API", "No se recibió el participante host, algo falló en la creación de la sala");
         }
+
         //vista de participantes dentro de la sala host
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipants);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -92,39 +81,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
             @Override
             public void onRemove(Participant participant) {
                 // Proceso para borrar del backend a un usuario de la sala de pago
-                paymentRepository.removeParticipant(paymentId, participant.getid(),
-                        new PaymentRepository.RemoveParticipantCallback() {
-                            @Override
-                            public void onSuccess() {
-                                // notifica al participante que ha sido eliminado, web socket
-                                try {
-                                    JSONObject msg = new JSONObject();
-                                    msg.put("type", "participant_removed");
-                                    msg.put("user_id", participant.getid());
-                                    socket.send(msg);
-                                } catch (Exception e) {
-                                    Log.e("WS", "Error notificando eliminación: " + e.getMessage());
-                                }
-
-                                // Acttualizar interfaz gráfica
-                                runOnUiThread(() -> {
-                                    for (Participant p : plist) {
-                                        if (p.getid() == participant.getid()) {
-                                            plist.remove(p);
-                                            calcularMontos();
-                                            break;
-                                        }
-                                    }
-                                    calcularMontos();
-                                    adapter.notifyDataSetChanged();
-                                });
-                            }
-
-                            @Override
-                            public void onError(String message) {
-                                Log.e("API", "Error eliminando participante: " + message);
-                            }
-                        });
+                removeParicipant(participant.getid());
                 }
             @Override
             public void onConfirm(Participant participant) {
@@ -220,35 +177,76 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
                 Log.e("NFC", error);
             }
         });
-        //TODO eliminar sala de pago del backend si el host cancela el pago.
         btCancel.setOnClickListener(view -> {
-            //paymentRepository.
-            finish();
+            // hay que notificar a todos los participantes que la sala ha sido eliminada
+            for (Participant p : plist) {
+                if (p.getid() != hostId) {
+                    removeParicipant(p.getid());
+                }
+            }
+            // Hay que eliminar la sala de pago
+            paymentRepository.destroyPaymentRoom(paymentId, new PaymentRepository.DestroyPaymentRoomCallback() {
+                @Override
+                public void onsuccess() {
+                    finish();
+                }
+
+                @Override
+                public void onError(String message) {
+                    Log.e("API", "Error eliminando sala de pago: " + message);
+                }
+            });
         });
 
         // Botón para iniciar el pago, solo si todos los participantes han confirmado
         btStartpayment.setOnClickListener(v -> {
             if (paymentStatusCheck()) {
-                Intent intent = new Intent(PaymentHostRoomActivity.this, PaymentPostHostRoomActivity.class);
-                intent.putExtra("pList", (Serializable) plist);
-                intent.putExtra("TOTAL_AMOUNT", totalAmount);
-                intent.putExtra("PAYMENT_ID", paymentId);
-                startActivity(intent);
+                userRepository.getUserById(hostId, new UserRepository.UserCallback() {
+                    @Override
+                    public void onSuccess(User user) {
+                        if (user.getFunds() < hostAmmount) {
+                            Log.d("API", "El host no tiene suficiente saldo para iniciar el pago.");
+
+                            new androidx.appcompat.app.AlertDialog.Builder(PaymentHostRoomActivity.this)
+                                    .setTitle("Fondos insuficientes")
+                                    .setMessage("Usted no tiene suficiente saldo para participar en el pago.")
+                                    .setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss())
+                                    .setCancelable(false)
+                                    .show();
+
+                            return;}
+
+                        Intent intent = new Intent(PaymentHostRoomActivity.this, PaymentPostHostRoomActivity.class);
+                        intent.putExtra("pList", (Serializable) plist);
+                        intent.putExtra("TOTAL_AMOUNT", totalAmount);
+                        intent.putExtra("PAYMENT_ID", paymentId);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("API", "Error cargando usuario: " + message);
+                    }
+                });
             } else {
                 Log.d("API", "No todos los participantes han confirmado el pago.");
             }
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        socket.close();
+    private boolean paymentStatusCheck() {
+        for (Participant p : plist) {
+            if (p.getid() == hostId) {
+                continue; // El host no necesita confirmar
+            }
+            if (!p.getConfirmationStatus()) {
+                return false;
+            }
+        }
+        return true;
     }
-
     private void calcularMontos() {
         int numParticipants = plist.size();
-        Log.d("API", "Número de participantes: " + numParticipants);
         amounPerPerson = totalAmount / numParticipants ;
 
         for (Participant p : plist) {
@@ -283,6 +281,46 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
 
         hostAmmount = amounPerPerson;
         hostStringAmmount.setText(String.format("%.2f €", amounPerPerson));
+    }
+    private void removeParicipant(int participantID){
+        paymentRepository.removeParticipant(paymentId, participantID,
+                new PaymentRepository.RemoveParticipantCallback() {
+                    @Override
+                    public void onSuccess() {
+                        // notifica al participante que ha sido eliminado, web socket
+                        try {
+                            JSONObject msg = new JSONObject();
+                            msg.put("type", "participant_removed");
+                            msg.put("user_id", participantID);
+                            socket.send(msg);
+                        } catch (Exception e) {
+                            Log.e("WS", "Error notificando eliminación: " + e.getMessage());
+                        }
+
+                        // Acttualizar interfaz gráfica
+                        runOnUiThread(() -> {
+                            for (Participant p : plist) {
+                                if (p.getid() == participantID) {
+                                    plist.remove(p);
+                                    calcularMontos();
+                                    break;
+                                }
+                            }
+                            calcularMontos();
+                            adapter.notifyDataSetChanged();
+                        });
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("API", "Error eliminando participante: " + message);
+                    }
+                });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        socket.close();
     }
     @Override
     protected void onResume() {

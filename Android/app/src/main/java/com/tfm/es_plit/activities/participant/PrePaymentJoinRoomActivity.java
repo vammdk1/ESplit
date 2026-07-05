@@ -31,7 +31,7 @@ public class PrePaymentJoinRoomActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(v -> finish());
     }
 
-    // Método para buscar sala con reintentos y los datos de la sala
+    // metodo para buscar sala con reintentos y los datos de la sala
     private void buscarSalaConReintentos() {
         pollingRunnable = () -> {
             userRepository.getPendingPayment(currentUserId, new UserRepository.PendingPaymentCallback() {
