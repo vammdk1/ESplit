@@ -49,14 +49,28 @@
                     android:textAlignment="center"
                     android:textColor="@color/eggshell"
                     android:layout_margin="5dp"/>
-                <TextView
+
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Acerca el teléfono al TPV"
-                    android:textSize="20sp"
-                    android:textStyle="italic"
-                    android:textColor="@color/eggshell"
-                    android:layout_margin="5dp"/>
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Acercar al TPV para pagar:"
+                        android:textSize="20sp"
+                        android:textStyle="italic"
+                        android:textColor="@color/eggshell"
+                        android:layout_margin="5dp"/>
+                    <TextView
+                        android:id="@+id/StringPaymentAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="20sp"
+                        android:textStyle="italic"
+                        android:textColor="@color/eggshell"
+                        android:layout_margin="5dp"/>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/paymentTimer"
@@ -93,19 +107,7 @@
                 android:textColor="@color/red"
                 app:strokeColor="@color/red"
                 app:cornerRadius="14dp"
-                android:layout_marginEnd="8dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnNextActivity"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:text="Continuar"
-                android:textColor="@color/green"
-                app:strokeColor="@color/green"
-                app:cornerRadius="14dp"
-                />
+            />
 
         </LinearLayout>
     </LinearLayout>
