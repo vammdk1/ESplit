@@ -3,6 +3,8 @@ from sqlmodel import SQLModel, Session, select
 from app.database import get_session
 from app.models import Payment, Participant, User
 from app.connection_manager import manager
+from app.auth import create_token, get_current_user
+
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
@@ -10,17 +12,14 @@ router = APIRouter(prefix="/payments", tags=["payments"])
 class PaymentCreateEmpty(SQLModel):
     total_amount: float
 
-
 class ParticipantAdd(SQLModel):
     user_id: int
     name: str
     amount: float
 
-
 class PaymentResponse(SQLModel):
     id: int
     payment_status: bool
-
 
 class PayResponse(SQLModel):
     success: bool
@@ -37,7 +36,7 @@ class ParticipantOut(SQLModel):
     confirmation_status: bool
 
 @router.get("/{payment_id}/participants", response_model=list[ParticipantOut])
-def get_participants(payment_id: int, session: Session = Depends(get_session)):
+def get_participants(payment_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
     participants = session.exec(
         select(Participant).where(Participant.payment_id == payment_id)
     ).all()
@@ -51,9 +50,15 @@ def get_participants(payment_id: int, session: Session = Depends(get_session)):
         for p in participants
     ]
 
+@router.get("/{payment_id}", response_model=Payment)
+def get_payment(payment_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    payment = session.get(Payment, payment_id)
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+    return payment
 
 @router.put("/{payment_id}/participants/{user_id}")
-def update_participant_amount(payment_id: int, user_id: int, data: ParticipantUpdate, session: Session = Depends(get_session)):
+def update_participant_amount(payment_id: int, user_id: int, data: ParticipantUpdate, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
     participant = session.exec(
         select(Participant).where(
             Participant.payment_id == payment_id,
@@ -71,15 +76,13 @@ def update_participant_amount(payment_id: int, user_id: int, data: ParticipantUp
 
     return {"success": True}
 
-
 @router.post("/", response_model=PaymentResponse)
-def create_payment(payment_data: PaymentCreateEmpty, session: Session = Depends(get_session)):
+def create_payment(payment_data: PaymentCreateEmpty, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
     payment = Payment(total_amount=payment_data.total_amount)
     session.add(payment)
     session.commit()
     session.refresh(payment)
     return payment
-
 
 @router.post("/{payment_id}/participants", response_model=Participant)
 def add_participant(payment_id: int, data: ParticipantAdd, session: Session = Depends(get_session)):
@@ -98,40 +101,9 @@ def add_participant(payment_id: int, data: ParticipantAdd, session: Session = De
     session.refresh(participant)
     return participant
 
-
-@router.get("/{payment_id}", response_model=Payment)
-def get_payment(payment_id: int, session: Session = Depends(get_session)):
-    payment = session.get(Payment, payment_id)
-    if not payment:
-        raise HTTPException(status_code=404, detail="Payment not found")
-    return payment
-
-
-@router.post("/{payment_id}/pay", response_model=PayResponse)
-def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_session)):
-    payment = session.get(Payment, payment_id)
-    if not payment:
-        raise HTTPException(status_code=404, detail="Payment not found")
-
-    if payment.total_amount != amount_to_pay:
-        return PayResponse(success=False, payment_status=payment.payment_status)
-
-    for participant in payment.participants:
-        user = session.get(User, participant.user_id)
-        if user:
-            user.funds -= participant.amount
-            session.add(user)
-
-    payment.payment_status = True
-    session.add(payment)
-    session.commit()
-    session.refresh(payment)
-
-    return PayResponse(success=True, payment_status=payment.payment_status)
-
 #Broadcast de cierre de pago
 @router.post("/{payment_id}/pay", response_model=PayResponse)
-async def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_session)):
+async def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
     payment = session.get(Payment, payment_id)
     if not payment:
         raise HTTPException(status_code=404, detail="Payment not found")
@@ -153,58 +125,6 @@ async def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(
     await manager.broadcast(payment_id, {"type": "payment_completed"})
 
     return PayResponse(success=True, payment_status=payment.payment_status)
-
-@router.delete("/")
-def delete_all_payments(session: Session = Depends(get_session)):
-    participants = session.exec(select(Participant)).all()
-    for participant in participants:
-        session.delete(participant)
-
-    payments = session.exec(select(Payment)).all()
-    for payment in payments:
-        session.delete(payment)
-
-    session.commit()
-
-    return {
-        "success": True,
-        "message": "All payments deleted"
-    }
-
-@router.delete("/{payment_id}")
-def delete_payment(payment_id: int, session: Session = Depends(get_session)):
-    payment = session.get(Payment, payment_id)
-
-    if not payment:
-        raise HTTPException(status_code=404, detail="Payment not found")
-
-    for participant in payment.participants:
-        session.delete(participant)
-
-    session.delete(payment)
-    session.commit()
-
-    return {
-        "success": True,
-        "message": f"Payment {payment_id} deleted"
-    }
-
-@router.delete("/{payment_id}/participants/{user_id}")
-def remove_participant(payment_id: int, user_id: int, session: Session = Depends(get_session)):
-    participant = session.exec(
-        select(Participant).where(
-            Participant.payment_id == payment_id,
-            Participant.user_id == user_id
-        )
-    ).first()
-
-    if not participant:
-        raise HTTPException(status_code=404, detail="Participant not found")
-
-    session.delete(participant)
-    session.commit()
-
-    return {"success": True}
 
 @router.post("/tpv/charge")
 async def tpv_charge(card_number: str, amount: float, session: Session = Depends(get_session)):
@@ -261,3 +181,55 @@ async def tpv_charge(card_number: str, amount: float, session: Session = Depends
     await manager.broadcast(active_payment.id, {"type": "payment_completed"})
 
     return {"success": True, "payment_id": active_payment.id}
+
+@router.delete("/")
+def delete_all_payments(session: Session = Depends(get_session)):
+    participants = session.exec(select(Participant)).all()
+    for participant in participants:
+        session.delete(participant)
+
+    payments = session.exec(select(Payment)).all()
+    for payment in payments:
+        session.delete(payment)
+
+    session.commit()
+
+    return {
+        "success": True,
+        "message": "All payments deleted"
+    }
+
+@router.delete("/{payment_id}")
+def delete_payment(payment_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    payment = session.get(Payment, payment_id)
+
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+
+    for participant in payment.participants:
+        session.delete(participant)
+
+    session.delete(payment)
+    session.commit()
+
+    return {
+        "success": True,
+        "message": f"Payment {payment_id} deleted"
+    }
+
+@router.delete("/{payment_id}/participants/{user_id}")
+def remove_participant(payment_id: int, user_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    participant = session.exec(
+        select(Participant).where(
+            Participant.payment_id == payment_id,
+            Participant.user_id == user_id
+        )
+    ).first()
+
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participant not found")
+
+    session.delete(participant)
+    session.commit()
+
+    return {"success": True}

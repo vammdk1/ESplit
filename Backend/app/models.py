@@ -22,6 +22,7 @@ class User(SQLModel, table=True):
     funds: float = 0.0
     password: str
     card_number: str = Field(default_factory=generate_fake_card_number)
+    actual_token: Optional[str] = Field(default=None) #Token para las sesiones 
 
 
 class Participant(SQLModel, table=True):
