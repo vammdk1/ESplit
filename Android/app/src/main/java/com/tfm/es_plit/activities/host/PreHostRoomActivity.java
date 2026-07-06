@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import com.tfm.es_plit.R;
+import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.models.Participant;
 import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.network.PaymentRepository;
@@ -27,8 +28,9 @@ public class PreHostRoomActivity extends AppCompatActivity {
 
         btnStart = findViewById(R.id.btnNextActivity);
         btnCancel = findViewById(R.id.btnHostCancel);
-        paymentRepository = new PaymentRepository();
-        userRepository = new UserRepository();
+        String token = new SessionManager(this).getToken();
+        paymentRepository = new PaymentRepository(token);
+        userRepository = new UserRepository(token);
 
         //recibir host
         int hostId = getIntent().getIntExtra("ACTUAL_USER", 0);

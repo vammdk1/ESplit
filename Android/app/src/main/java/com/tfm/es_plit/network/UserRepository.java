@@ -12,8 +12,8 @@ import retrofit2.Response;
 public class UserRepository {
     private final ApiService apiService;
 
-    public UserRepository() {
-        this.apiService = ApiClient.getInstance().create(ApiService.class);
+    public UserRepository(String token) {
+        this.apiService = ApiClient.getInstance(token).create(ApiService.class);
     }
 
     public interface UserCallback {
@@ -33,6 +33,30 @@ public class UserRepository {
         void onSuccess(int userId, String name);
         void onError(String message);
     }
+
+    public interface LoginCallback {
+        void onSuccess(int userId, String token);
+        void onError(String message);
+    }
+
+    public void login(String email, String password, LoginCallback callback) {
+        apiService.login(email, password).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    callback.onSuccess(response.body().getUserId(), response.body().getToken());
+                } else {
+                    callback.onError("Credenciales incorrectas");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
     public void getPendingPayment(int userId, PendingPaymentCallback callback) {
         apiService.getPendingPayment(userId).enqueue(new Callback<Map<String, Object>>() {
             @Override

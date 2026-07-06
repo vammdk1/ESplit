@@ -37,7 +37,8 @@ public class UserAccountActivity extends AppCompatActivity {
         SessionManager session = new SessionManager(this);
         hostId = session.getUserId();
 
-        userRepository = new UserRepository();
+        String token = new SessionManager(this).getToken();
+        userRepository = new UserRepository(token);
         userRepository.getUserById(hostId, new UserRepository.UserCallback() {
             @Override
             public void onSuccess(User user) {

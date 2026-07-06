@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.activities.UserAccountActivity;
+import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.models.Participant;
 import com.tfm.es_plit.network.PaymentRepository;
 import com.tfm.es_plit.network.PaymentSocket;
@@ -44,7 +45,8 @@ public class PaymentPostHostRoomActivity extends AppCompatActivity {
         paymentId = getIntent().getIntExtra("PAYMENT_ID", 0);
 
         totalAmmountText.setText(String.format("%.2f €", totalAmount));
-        paymentRepository = new PaymentRepository();
+        String token = new SessionManager(this).getToken();
+        paymentRepository = new PaymentRepository(token);
         socket = new PaymentSocket();
 
         // conecta a la sala para poder hacer broadcast

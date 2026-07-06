@@ -21,8 +21,8 @@ public class PrePaymentJoinRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prejoinroom);
         btnCancel = findViewById(R.id.btnHostCancel);
-
-        userRepository = new UserRepository();
+        String token = new SessionManager(this).getToken();
+        userRepository = new UserRepository(token);
         currentUserId = new SessionManager(this).getUserId();
 
         // arranca el polling automáticamente al entrar a la pantalla

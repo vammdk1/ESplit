@@ -42,4 +42,6 @@ public interface ApiService {
     Call<List<Participant>> getPaymentRoomParticipants(@Path("id") int paymentId);
     @GET("users/by-card/{card_number}")
     Call<Map<String, Object>> getUserByCard(@Path("card_number") String cardNumber);
+    @POST("users/login")
+    Call<LoginResponse> login(@Query("email") String email, @Query("password") String password);
 }

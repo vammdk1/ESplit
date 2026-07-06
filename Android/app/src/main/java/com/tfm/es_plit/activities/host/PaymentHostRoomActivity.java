@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tfm.es_plit.R;
 import com.tfm.es_plit.adapters.ParticipantAdapter;
+import com.tfm.es_plit.data.SessionManager;
 import com.tfm.es_plit.models.User;
 import com.tfm.es_plit.models.Participant;
 import com.tfm.es_plit.network.UserRepository;
@@ -59,8 +60,9 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         splitAmmount = findViewById(R.id.totalSplitAmmount);
         splitAmmount.setText(String.format("%.2f €", totalAmount));
 
-        userRepository = new UserRepository();
-        paymentRepository = new PaymentRepository();
+        String token = new SessionManager(this).getToken();
+        userRepository = new UserRepository(token);
+        paymentRepository = new PaymentRepository(token);
         socket = new PaymentSocket();
 
         //Añadir al host a la lista de la sala de pago local

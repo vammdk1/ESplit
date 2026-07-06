@@ -50,8 +50,10 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         localHostAmmount = findViewById(R.id.textUnmanagedAmmount);
         splitAmmount = findViewById(R.id.totalSplitAmmount);
 
-        paymentRepository = new PaymentRepository();
-        userRepository = new UserRepository();
+        String token = new SessionManager(this).getToken();
+        paymentRepository = new PaymentRepository(token);
+        userRepository = new UserRepository(token);
+
         socket = new PaymentSocket();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerParticipantsJoin);

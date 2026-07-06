@@ -12,8 +12,8 @@ import retrofit2.Response;
 public class PaymentRepository {
     private final ApiService apiService;
 
-    public PaymentRepository() {
-        this.apiService = ApiClient.getInstance().create(ApiService.class);
+    public PaymentRepository(String token) {
+        this.apiService = ApiClient.getInstance(token).create(ApiService.class);
     }
 
     public interface CreatePaymentCallback {

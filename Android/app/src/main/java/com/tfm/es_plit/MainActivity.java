@@ -29,33 +29,38 @@ public class MainActivity extends AppCompatActivity {
         pass = findViewById(R.id.loginPassword);
 
         btnStart.setOnClickListener(v -> {
-            userRepository = new UserRepository();
-            userRepository.getUserByEmail(email.getText().toString(), new UserRepository.UserCallback() {
+            // el login no necesita token, se crea sin él
+            userRepository = new UserRepository("");
+            userRepository.login(email.getText().toString(), pass.getText().toString(), new UserRepository.LoginCallback() {
                 @Override
-                public void onSuccess(User user) {
-                    if(user.getPassword().equals(pass.getText().toString())){
-                        SessionManager session = new SessionManager(MainActivity.this);
-                        session.saveUserId(user.getId());
+                public void onSuccess(int userId, String token) {
+                    SessionManager session = new SessionManager(MainActivity.this);
+                    session.saveSession(userId, token);
 
-                        // guarda el card_number para el HCE
-                        getSharedPreferences("user_prefs", MODE_PRIVATE)
-                                .edit()
-                                .putString("card_number", user.getCardNumber())
-                                .apply();
+                    UserRepository authenticatedRepo = new UserRepository(token);
+                    authenticatedRepo.getUserById(userId, new UserRepository.UserCallback() {
+                        @Override
+                        public void onSuccess(User user) {
+                            getSharedPreferences("user_prefs", MODE_PRIVATE)
+                                    .edit()
+                                    .putString("card_number", user.getCardNumber())
+                                    .apply();
+                            Intent intent = new Intent(MainActivity.this, UserAccountActivity.class);
+                            startActivity(intent);
+                        }
 
-                        Intent intent = new Intent(MainActivity.this, UserAccountActivity.class);
-                        startActivity(intent);
-                    }
+                        @Override
+                        public void onError(String message) {
+                            Log.e("API", "Error cargando usuario: " + message);
+                        }
+                    });
                 }
 
                 @Override
                 public void onError(String message) {
-                    Log.e("API", "Error cargando usuario " + email.getText().toString() + ": " + message);
-
+                    Log.e("API", "Error en login: " + message);
                 }
             });
-
-
         });
     }
 }
