@@ -153,5 +153,8 @@ public class UserRepository {
             }
         });
     }
+    public void logout(Callback<Object> callback) {
+        apiService.logout().enqueue(callback);
+    }
 
 }

@@ -44,4 +44,6 @@ public interface ApiService {
     Call<Map<String, Object>> getUserByCard(@Path("card_number") String cardNumber);
     @POST("users/login")
     Call<LoginResponse> login(@Query("email") String email, @Query("password") String password);
+    @POST("users/logout")
+    Call<Object> logout();
 }
