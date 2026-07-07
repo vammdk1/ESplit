@@ -133,3 +133,10 @@ def reset_users(session: Session = Depends(get_session)):
         "message": "Test users restored"
     }
 
+# cierre de sesión, invalida el token actual del usuario
+@router.post("/logout")
+def logout(session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    current_user.actual_token = None
+    session.add(current_user)
+    session.commit()
+    return {"success": True}
