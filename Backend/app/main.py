@@ -2,7 +2,11 @@ from fastapi import FastAPI
 from app.database import create_db_and_tables
 from app.routers import users, payments, ws
 
-app = FastAPI(title="E-Split API")
+app = FastAPI(
+    title="E-Split API",
+    swagger_ui_parameters={
+        "operationsSorter": "method"
+    })
 
 
 @app.on_event("startup")
