@@ -3,7 +3,7 @@ from sqlmodel import SQLModel, Session, select
 from app.database import get_session
 from app.models import Payment, Participant, User
 from app.connection_manager import manager
-from app.auth import create_token, get_current_user
+from app.auth import create_token, get_current_user, verify_room_membership
 
 
 router = APIRouter(prefix="/payments", tags=["payments"])
@@ -37,6 +37,7 @@ class ParticipantOut(SQLModel):
 
 @router.get("/{payment_id}/participants", response_model=list[ParticipantOut])
 def get_participants(payment_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    verify_room_membership(payment_id, current_user, session)  # Verifica que el usuario actual es miembro de la sala
     participants = session.exec(
         select(Participant).where(Participant.payment_id == payment_id)
     ).all()
@@ -52,6 +53,7 @@ def get_participants(payment_id: int, session: Session = Depends(get_session), c
 
 @router.get("/{payment_id}", response_model=Payment)
 def get_payment(payment_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    verify_room_membership(payment_id, current_user, session)  # Verifica que el usuario actual es miembro de la sala
     payment = session.get(Payment, payment_id)
     if not payment:
         raise HTTPException(status_code=404, detail="Payment not found")
@@ -59,6 +61,7 @@ def get_payment(payment_id: int, session: Session = Depends(get_session), curren
 
 @router.put("/{payment_id}/participants/{user_id}")
 def update_participant_amount(payment_id: int, user_id: int, data: ParticipantUpdate, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    verify_room_membership(payment_id, current_user, session)  # Verifica que el usuario actual es miembro de la sala
     participant = session.exec(
         select(Participant).where(
             Participant.payment_id == payment_id,
@@ -104,6 +107,7 @@ def add_participant(payment_id: int, data: ParticipantAdd, session: Session = De
 #Broadcast de cierre de pago
 @router.post("/{payment_id}/pay", response_model=PayResponse)
 async def pay(payment_id: int, amount_to_pay: float, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    verify_room_membership(payment_id, current_user, session)  # Verifica que el usuario actual es miembro de la sala
     payment = session.get(Payment, payment_id)
     if not payment:
         raise HTTPException(status_code=404, detail="Payment not found")
@@ -201,6 +205,7 @@ def delete_all_payments(session: Session = Depends(get_session)):
 
 @router.delete("/{payment_id}")
 def delete_payment(payment_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    verify_room_membership(payment_id, current_user, session)  # Verifica que el usuario actual es miembro de la sala
     payment = session.get(Payment, payment_id)
 
     if not payment:
@@ -219,6 +224,7 @@ def delete_payment(payment_id: int, session: Session = Depends(get_session), cur
 
 @router.delete("/{payment_id}/participants/{user_id}")
 def remove_participant(payment_id: int, user_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    verify_room_membership(payment_id, current_user, session)  # Verifica que el usuario haciendo la llamada es parte de la sala
     participant = session.exec(
         select(Participant).where(
             Participant.payment_id == payment_id,
