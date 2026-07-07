@@ -3,6 +3,7 @@ from sqlmodel import Session, select, delete
 from app.database import get_session
 from app.models import User, Participant, Payment
 from app.auth import create_token, get_current_user
+import bcrypt
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -58,11 +59,11 @@ def get_user_by_card(card_number: str, session: Session = Depends(get_session), 
         raise HTTPException(status_code=404, detail="Card not found")
     return {"user_id": user.id, "name": user.name}
 
-#Login con token en lugar de usuario y contraseña
+#Login con token en lugar y contraseña cifrada en el servidor
 @router.post("/login")
 def login(email: str, password: str, session: Session = Depends(get_session), ):
     user = session.exec(select(User).where(User.email == email)).first()
-    if user and user.password == password:
+    if user and bcrypt.checkpw(password.encode(), user.password.encode()):
         token = create_token(user.id)
         user.actual_token = token
         session.add(user)
@@ -73,6 +74,7 @@ def login(email: str, password: str, session: Session = Depends(get_session), ):
 
 @router.post("/", response_model=User)
 def create_user(user: User, session: Session = Depends(get_session)):
+    user.password = bcrypt.hashpw(user.password.encode(), bcrypt.gensalt()).decode()
     session.add(user)
     session.commit()
     session.refresh(user)
@@ -81,6 +83,31 @@ def create_user(user: User, session: Session = Depends(get_session)):
 # endpoint de desarrollo para el restablecimientod e usuarios post pruebas
 @router.post("/reset")
 def reset_users(session: Session = Depends(get_session)):
+    session.exec(delete(User))
+    session.commit()
+    
+    raw_users = [
+        {"name": "Victor Garcia", "email": "victor@esplit.com", "funds": 125.50, "password": "admin1234"},
+        {"name": "Laura Martinez", "email": "laura@esplit.com", "funds": 87.25, "password": "admin1234"},
+        {"name": "Carlos Fernandez", "email": "carlos@esplit.com", "funds": 210.00, "password": "admin1234"},
+        {"name": "Ana Lopez", "email": "ana@esplit.com", "funds": 54.75, "password": "admin1234"},
+        {"name": "123", "email": "123", "funds": 1000, "password": "admin1234"},
+        {"name": "MR ADMIN", "email": "admin@mail.com", "funds": 500, "password": "admin1234"},
+    ]
+
+    users = [
+        User(
+            name=u["name"],
+            email=u["email"],
+            funds=u["funds"],
+            password=bcrypt.hashpw(u["password"].encode(), bcrypt.gensalt()).decode()
+        )
+        for u in raw_users
+    ]
+
+    session.add_all(users)
+    session.commit()
+    return {"success": True, "message": f"{len(users)} usuarios creados"}
     # Eliminar todos los usuarios
     session.exec(delete(User))
     session.commit()
