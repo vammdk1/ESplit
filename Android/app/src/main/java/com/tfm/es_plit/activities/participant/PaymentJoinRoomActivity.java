@@ -91,7 +91,7 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
                 Log.e("API", "Error consultando participantes: " + message);
             }
         });
-        connectSocket();
+        connectSocket(token);
 
 
         btCancel.setOnClickListener(view -> {
@@ -124,8 +124,8 @@ public class PaymentJoinRoomActivity extends AppCompatActivity {
         });
     }
 
-    private void connectSocket() {
-        socket.connect(paymentId, new PaymentSocket.SocketListener() {
+    private void connectSocket(String token) {
+        socket.connect(paymentId, token ,new PaymentSocket.SocketListener() {
             @Override
             public void onConnected() {
                 Log.d("WS", "Participante conectado a la sala " + paymentId);

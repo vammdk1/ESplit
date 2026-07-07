@@ -93,7 +93,7 @@ public class PaymentHostRoomActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // Abre el WebSocket de la sala ya creada
-        socket.connect(paymentId, new PaymentSocket.SocketListener() {
+        socket.connect(paymentId, token, new PaymentSocket.SocketListener() {
             @Override
             public void onConnected() {
                 Log.d("WS", "Host conectado a la sala " + paymentId);

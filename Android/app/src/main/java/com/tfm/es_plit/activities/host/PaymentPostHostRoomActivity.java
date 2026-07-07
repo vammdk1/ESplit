@@ -50,7 +50,7 @@ public class PaymentPostHostRoomActivity extends AppCompatActivity {
         socket = new PaymentSocket();
 
         // conecta a la sala para poder hacer broadcast
-        socket.connect(paymentId, new PaymentSocket.SocketListener() {
+        socket.connect(paymentId, token, new PaymentSocket.SocketListener() {
             @Override
             public void onConnected() {
                 Log.d("WS", "PostHost conectado a la sala " + paymentId);

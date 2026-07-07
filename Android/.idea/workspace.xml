@@ -81,12 +81,14 @@
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/UserAccountActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/UserAccountActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/ApiService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_user_account.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_user_account.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentHostRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentPostHostRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/host/PaymentPostHostRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/participant/PaymentJoinRoomActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/activities/participant/PaymentJoinRoomActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/tfm/es_plit/network/PaymentSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/problems/problems-report.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +103,7 @@
       <entry key="_D:/GitHub/ESplit/Android" value="3DXdv2N5GSbMj91EVIe181jEEBw" />
     </persistenceIdMap>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=4200b5bde4e494bf, PhysicalDevice::serial=65fc69aa]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=65fc69aa]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -151,6 +153,18 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectSessionTemplates">
+    <option name="inlineTemplate">
+      <template>
+        <option name="modeId" value="InlineAgent" />
+        <option name="model">
+          <model>
+            <option name="modelType" value="builtin_id" />
+            <option name="modelValue" value="auto" />
+          </model>
+        </option>
+        <option name="targetType" value="LOCAL" />
+      </template>
+    </option>
     <option name="panelTemplate">
       <template>
         <option name="modeId" value="Agent" />

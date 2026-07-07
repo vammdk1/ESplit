@@ -32,6 +32,7 @@ public class UserAccountActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("USER", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
         btnHostPaymentRoom = findViewById(R.id.btnHost);
@@ -39,24 +40,10 @@ public class UserAccountActivity extends AppCompatActivity {
         userFundsText = findViewById(R.id.userFunds);
         userCardText = findViewById(R.id.userCard);
 
-        SessionManager session = new SessionManager(this);
-        hostId = session.getUserId();
-
+        // Inicializar repositorio y cargar usuario
         String token = new SessionManager(this).getToken();
         userRepository = new UserRepository(token);
-        userRepository.getUserById(hostId, new UserRepository.UserCallback() {
-            @Override
-            public void onSuccess(User user) {
-                userNametext.setText(user.getName());
-                userFundsText.setText(String.format("%.2f €",user.getFunds()));
-                userCardText.setText(user.getCardNumber());
-            }
-
-            @Override
-            public void onError(String message) {
-                Log.e("API", "Error cargando usuario " + "admin@mail.com" + ": " + message);
-            }
-        });
+        cargarDatosUser();
         //User user = repository.getUserByEmail("admin@mail.com");
 
         btnHostPaymentRoom.setOnClickListener(v -> {
@@ -90,6 +77,40 @@ public class UserAccountActivity extends AppCompatActivity {
                     Log.e("API", "Error en logout: " + t.getMessage());
                 }
             });
+        });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("USER", "onResume");
+        // Al volver de una actividad de pago, refrescar la información del usuario
+        cargarDatosUser();
+    }
+
+    // Carga/actualiza la información del usuario en la pantalla
+    private void cargarDatosUser() {
+        // Asegurarse de tener el repositorio inicializado
+        if (userRepository == null) {
+            String token = new SessionManager(this).getToken();
+            userRepository = new UserRepository(token);
+        }
+
+        // Actualiza el id del usuario (por si cambió la sesión)
+        SessionManager session = new SessionManager(this);
+        hostId = session.getUserId();
+
+        userRepository.getUserById(hostId, new UserRepository.UserCallback() {
+            @Override
+            public void onSuccess(User user) {
+                userNametext.setText(user.getName());
+                userFundsText.setText(String.format("%.2f €", user.getFunds()));
+                userCardText.setText(user.getCardNumber());
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.e("API", "Error cargando usuario " + hostId + ": " + message);
+            }
         });
     }
 }

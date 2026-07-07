@@ -1,6 +1,9 @@
 package com.tfm.es_plit.network;
 
 import android.util.Log;
+
+import com.tfm.es_plit.data.SessionManager;
+
 import okhttp3.*;
 import org.json.JSONObject;
 
@@ -15,9 +18,9 @@ public class PaymentSocket {
         void onError(String error);
     }
 
-    public void connect(int paymentId, SocketListener listener) {
+    public void connect(int paymentId, String token, SocketListener listener) {
         Request request = new Request.Builder()
-                .url(baseWsUrl + paymentId)
+                .url(baseWsUrl + paymentId + "?token=" + token)
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
