@@ -9,7 +9,6 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/", response_model=list[User])
 def get_users(session: Session = Depends(get_session)):
-    user = session.get(User, current_user.id)
     return session.exec(select(User)).all()
 
 
