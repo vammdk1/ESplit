@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect, Depends
-from jose import JWTError
-import jwt
+from jose import jwt, JWTError
 from sqlmodel import select
 from app.auth import SECRET_KEY, ALGORITHM
 from app.connection_manager import manager
